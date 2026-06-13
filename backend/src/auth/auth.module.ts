@@ -4,6 +4,8 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 export const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key';
 
@@ -17,7 +19,7 @@ export const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_key';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
