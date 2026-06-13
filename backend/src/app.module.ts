@@ -9,6 +9,9 @@ import { TagsModule } from './tags/tags.module';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { CoursesModule } from './courses/courses.module';
+import { CourseModulesModule } from './course-modules/course-modules.module';
+import { AssignmentsModule } from './assignments/assignments.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
     PostsModule,
     CommentsModule,
     BookmarksModule,
+    CoursesModule,
+    CourseModulesModule,
+    AssignmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

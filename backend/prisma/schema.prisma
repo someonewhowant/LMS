@@ -20,6 +20,7 @@ model User {
   posts     Post[]
   comments  Comment[]
   bookmarks Bookmark[]
+  courses   Course[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -76,4 +77,40 @@ model Bookmark {
   createdAt DateTime @default(now())
 
   @@unique([userId, postId])
+}
+
+model Course {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  isPublished Boolean        @default(false)
+  teacher     User           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId   Int
+  modules     CourseModule[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model CourseModule {
+  id          Int          @id @default(autoincrement())
+  title       String
+  content     String?
+  order       Int          @default(0)
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId    Int
+  assignments Assignment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Assignment {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  maxScore    Int          @default(100)
+  dueDate     DateTime?
+  module      CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
