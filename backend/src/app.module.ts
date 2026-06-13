@@ -7,9 +7,20 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TagsModule } from './tags/tags.module';
 import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, CategoriesModule, TagsModule, PostsModule],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    CategoriesModule,
+    TagsModule,
+    PostsModule,
+    CommentsModule,
+    BookmarksModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
