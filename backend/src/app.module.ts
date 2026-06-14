@@ -12,6 +12,10 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { CoursesModule } from './courses/courses.module';
 import { CourseModulesModule } from './course-modules/course-modules.module';
 import { AssignmentsModule } from './assignments/assignments.module';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { QuizzesModule } from './quizzes/quizzes.module';
+import { AchievementsModule } from './achievements/achievements.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { AssignmentsModule } from './assignments/assignments.module';
     CoursesModule,
     CourseModulesModule,
     AssignmentsModule,
+    EnrollmentsModule,
+    QuizzesModule,
+    AchievementsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

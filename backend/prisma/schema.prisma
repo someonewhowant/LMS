@@ -13,16 +13,22 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  password  String
-  role      String     @default("STUDENT") // STUDENT, TEACHER, ADMIN
-  posts     Post[]
-  comments  Comment[]
-  bookmarks Bookmark[]
-  courses   Course[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id           Int               @id @default(autoincrement())
+  email        String            @unique
+  password     String
+  role         String            @default("STUDENT") // STUDENT, TEACHER, ADMIN
+  posts        Post[]
+  comments     Comment[]
+  bookmarks    Bookmark[]
+  courses      Course[]
+  enrollments  Enrollment[]
+  quizResults  UserQuizResult[]
+  points       Int               @default(0)
+  achievements UserAchievement[]
+  activities   UserActivity[]
+  lastLoginAt  DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model Category {
@@ -87,6 +93,7 @@ model Course {
   teacher     User           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   teacherId   Int
   modules     CourseModule[]
+  enrollments Enrollment[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
@@ -99,6 +106,7 @@ model CourseModule {
   course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId    Int
   assignments Assignment[]
+  quizzes     Quiz[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
@@ -113,4 +121,88 @@ model Assignment {
   moduleId    Int
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId  Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model Quiz {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String?
+  moduleId    Int
+  module      CourseModule     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  results     UserQuizResult[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Question {
+  id        Int              @id @default(autoincrement())
+  text      String
+  quizId    Int
+  quiz      Quiz             @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options   QuestionOption[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model QuestionOption {
+  id         Int      @id @default(autoincrement())
+  text       String
+  isCorrect  Boolean  @default(false)
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model UserQuizResult {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId    Int
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  score     Int
+  total     Int
+  createdAt DateTime @default(now())
+}
+
+model Achievement {
+  id          Int               @id @default(autoincrement())
+  name        String            @unique
+  description String
+  iconUrl     String?
+  criteria    String
+  points      Int               @default(10)
+  users       UserAchievement[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model UserAchievement {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId Int
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  awardedAt     DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+model UserActivity {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
 }

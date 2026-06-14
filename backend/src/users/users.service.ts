@@ -42,4 +42,11 @@ export class UsersService {
   async remove(id: number): Promise<User> {
     return this.prisma.user.delete({ where: { id } });
   }
+
+  async updateLastLogin(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { lastLoginAt: new Date() },
+    });
+  }
 }
