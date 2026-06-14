@@ -11,4 +11,5 @@ export declare class UsersService {
     findByEmail(email: string): Promise<User | null>;
     update(id: number, data: UpdateUserDto): Promise<User>;
     remove(id: number): Promise<User>;
+    updateLastLogin(id: number): Promise<User>;
 }

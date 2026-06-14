@@ -41,7 +41,7 @@ import { AvatarComponent } from '../../ui/avatar/avatar';
         <span class="absolute top-2 right-2 w-2 h-2 bg-tertiary rounded-full"></span>
       </button>
       <a routerLink="/dashboard" class="ml-2 cursor-pointer flex items-center gap-2">
-        <app-avatar size="sm" [alt]="authService.currentUser()?.firstName || 'User'"></app-avatar>
+        <app-avatar size="sm" [alt]="authService.currentUser()?.email || 'User'"></app-avatar>
       </a>
     </ng-container>
 

@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
-import { ButtonComponent } from '../../shared/ui/button/button';
+import { AuthService } from '../../../core/auth/auth.service';
+import { ButtonComponent } from '../../../shared/ui/button/button';
 
 @Component({
   selector: 'app-login',
@@ -138,8 +138,13 @@ export class LoginComponent {
     setTimeout(() => {
       // Simulate success
       this.isLoading = false;
-      this.authService['currentUserSignal'].set({
-        id: '1', email: this.loginForm.value.email, firstName: 'Dev', lastName: 'Student', role: 'student'
+      this.authService.mockLogin({
+        id: 1, 
+        email: this.loginForm.value.email, 
+        role: 'STUDENT',
+        points: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
       });
       this.router.navigate(['/dashboard']);
     }, 1000);

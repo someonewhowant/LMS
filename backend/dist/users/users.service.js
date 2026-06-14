@@ -79,6 +79,12 @@ let UsersService = class UsersService {
     async remove(id) {
         return this.prisma.user.delete({ where: { id } });
     }
+    async updateLastLogin(id) {
+        return this.prisma.user.update({
+            where: { id },
+            data: { lastLoginAt: new Date() },
+        });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

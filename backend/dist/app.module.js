@@ -18,12 +18,26 @@ const tags_module_1 = require("./tags/tags.module");
 const posts_module_1 = require("./posts/posts.module");
 const comments_module_1 = require("./comments/comments.module");
 const bookmarks_module_1 = require("./bookmarks/bookmarks.module");
+const courses_module_1 = require("./courses/courses.module");
+const course_modules_module_1 = require("./course-modules/course-modules.module");
+const assignments_module_1 = require("./assignments/assignments.module");
+const enrollments_module_1 = require("./enrollments/enrollments.module");
+const quizzes_module_1 = require("./quizzes/quizzes.module");
+const achievements_module_1 = require("./achievements/achievements.module");
+const analytics_module_1 = require("./analytics/analytics.module");
+const uploads_module_1 = require("./uploads/uploads.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'uploads'),
+                serveRoot: '/uploads',
+            }),
             prisma_module_1.PrismaModule,
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
@@ -32,6 +46,14 @@ exports.AppModule = AppModule = __decorate([
             posts_module_1.PostsModule,
             comments_module_1.CommentsModule,
             bookmarks_module_1.BookmarksModule,
+            courses_module_1.CoursesModule,
+            course_modules_module_1.CourseModulesModule,
+            assignments_module_1.AssignmentsModule,
+            enrollments_module_1.EnrollmentsModule,
+            quizzes_module_1.QuizzesModule,
+            achievements_module_1.AchievementsModule,
+            analytics_module_1.AnalyticsModule,
+            uploads_module_1.UploadsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

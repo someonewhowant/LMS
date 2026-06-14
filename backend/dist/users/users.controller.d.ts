@@ -9,6 +9,8 @@ export declare class UsersController {
         password: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -17,6 +19,8 @@ export declare class UsersController {
         password: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -25,6 +29,8 @@ export declare class UsersController {
         password: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     } | null>;
@@ -33,6 +39,8 @@ export declare class UsersController {
         password: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -41,6 +49,8 @@ export declare class UsersController {
         password: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

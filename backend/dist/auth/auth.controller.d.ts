@@ -7,6 +7,8 @@ export declare class AuthController {
         email: string;
         id: number;
         role: string;
+        points: number;
+        lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

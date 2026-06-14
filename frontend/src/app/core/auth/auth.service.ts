@@ -3,17 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
 import { Observable, tap, catchError, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { User } from '../models/user.model';
 
 // Environment could be imported here, using hardcoded for simplicity
 const API_URL = 'http://localhost:3000/api/auth';
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -44,11 +37,12 @@ export class AuthService {
       const payload = this.tokenService.getPayload();
       if (payload) {
         this.currentUserSignal.set({
-          id: payload.sub || '1',
+          id: parseInt(payload.sub) || 1,
           email: payload.email || 'user@example.com',
-          firstName: 'Developer',
-          lastName: 'Student',
-          role: payload.role || 'student'
+          role: payload.role || 'STUDENT',
+          points: 1250,
+          createdAt: new Date(),
+          updatedAt: new Date()
         });
       }
     }
@@ -66,7 +60,14 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post(`${API_URL}/register`, userData);
+    return this.http.post<{access_token: string}>(`${API_URL}/register`, userData).pipe(
+      tap(response => {
+        if (response.access_token) {
+          this.tokenService.saveToken(response.access_token);
+          this.checkAuthStatus();
+        }
+      })
+    );
   }
 
   logout(): void {
@@ -75,3 +76,5 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 }
+
+

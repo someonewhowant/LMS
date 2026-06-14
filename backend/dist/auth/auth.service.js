@@ -63,6 +63,7 @@ let AuthService = class AuthService {
         return null;
     }
     async login(user) {
+        await this.usersService.updateLastLogin(user.id);
         const payload = { email: user.email, sub: user.id, role: user.role };
         return {
             access_token: this.jwtService.sign(payload),
