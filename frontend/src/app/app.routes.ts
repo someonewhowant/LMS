@@ -28,6 +28,11 @@ export const routes: Routes = [
         path: 'register',
         canActivate: [guestGuard],
         loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent),
+      },
+      {
+        path: 'register-teacher',
+        canActivate: [guestGuard],
+        loadComponent: () => import('./features/auth/register-teacher/register-teacher.component').then(m => m.RegisterTeacherComponent),
       }
     ]
   },

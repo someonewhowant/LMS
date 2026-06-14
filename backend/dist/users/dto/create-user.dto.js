@@ -16,8 +16,9 @@ const swagger_1 = require("@nestjs/swagger");
 class CreateUserDto {
     email;
     password;
+    role;
     static _OPENAPI_METADATA_FACTORY() {
-        return { email: { required: true, type: () => String, format: "email" }, password: { required: true, type: () => String, minLength: 6 } };
+        return { email: { required: true, type: () => String, format: "email" }, password: { required: true, type: () => String, minLength: 6 }, role: { required: false, type: () => String } };
     }
 }
 exports.CreateUserDto = CreateUserDto;
@@ -34,4 +35,9 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'STUDENT', required: false }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "role", void 0);
 //# sourceMappingURL=create-user.dto.js.map

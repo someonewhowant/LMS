@@ -5,8 +5,8 @@ export declare class AuthController {
     constructor(authService: AuthService);
     register(createUserDto: CreateUserDto): Promise<{
         email: string;
-        id: number;
         role: string;
+        id: number;
         points: number;
         lastLoginAt: Date | null;
         createdAt: Date;

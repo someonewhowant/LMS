@@ -134,19 +134,15 @@ export class LoginComponent {
     });
     */
 
-    // Mock Login:
-    setTimeout(() => {
-      // Simulate success
-      this.isLoading = false;
-      this.authService.mockLogin({
-        id: 1, 
-        email: this.loginForm.value.email, 
-        role: 'STUDENT',
-        points: 0,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-      this.router.navigate(['/dashboard']);
-    }, 1000);
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.message || 'Invalid email or password';
+      }
+    });
   }
 }

@@ -12,4 +12,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6)
   password!: string;
+
+  @ApiProperty({ example: 'STUDENT', required: false })
+  @IsString()
+  role?: string;
 }
+
