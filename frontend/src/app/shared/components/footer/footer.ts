@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { ButtonComponent } from '../../ui/button/button';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [],
+  imports: [ButtonComponent],
   template: `
 <footer class="bg-surface-container-lowest pt-xl pb-lg px-margin-mobile md:px-margin-desktop border-t border-outline-variant">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-xl">
@@ -42,7 +43,7 @@ import { Component } from '@angular/core';
       <p class="text-on-surface-variant text-body-md">Weekly backend insights delivered to your inbox.</p>
       <div class="flex mt-sm group">
         <input class="w-full bg-surface-container-high border border-outline-variant text-on-surface px-4 py-2 rounded-l focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="email@dev.com" type="email"/>
-        <button class="bg-primary text-on-primary px-4 py-2 rounded-r font-label-caps text-label-caps hover:brightness-110 cursor-pointer">Join</button>
+        <button app-button variant="primary" size="sm" class="rounded-l-none !rounded-r border border-primary border-l-0">Join</button>
       </div>
     </div>
   </div>
@@ -59,3 +60,4 @@ import { Component } from '@angular/core';
   styles: ``
 })
 export class Footer {}
+

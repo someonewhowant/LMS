@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
+import { AvatarComponent } from '../../ui/avatar/avatar';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [],
+  imports: [AvatarComponent],
   template: `
 <aside class="h-full w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-md px-sm">
   <div class="flex items-center gap-sm px-xs mb-lg">
-    <div class="w-10 h-10 bg-primary-container/20 rounded flex items-center justify-center border border-primary/30">
-      <span class="material-symbols-outlined text-primary">school</span>
-    </div>
+    <app-avatar src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFTqfDayGYrd2f-VGMscwOjM7e0emx1Zv5efmuv1M4346WNlcojoG4sKAGW2FHKDjzAtlmF0K74RfYLfxVjP5Fg0zF822oy1QVMV3iwTrQ4SAtx5LaIuLgiHnUpOWvpdpOiL9ZMb-baUjm0cs_FiFc8iJWuHnkCpf0HKY9LAPuwp7Rnd-8qdvgibA3c3rD94e7mCkoLeu1JpvygqhQl4V6sWEtcDfHGErpVj0pVJRXaDFj-vEKz3VbSSCKfyf5fU2vBiiUEJpSxKjo" size="md" alt="Developer Student"></app-avatar>
     <div>
       <div class="font-label-caps text-label-caps text-on-surface">Developer Student</div>
       <div class="text-[10px] text-primary font-bold tracking-widest">PRO PLAN</div>
@@ -53,3 +52,4 @@ import { Component } from '@angular/core';
   styles: ``
 })
 export class Sidebar {}
+
