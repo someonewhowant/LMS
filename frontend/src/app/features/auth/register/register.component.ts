@@ -130,12 +130,25 @@ export class RegisterComponent {
 
     this.authService.register(payload).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        // Auto-login after successful registration
+        this.authService.login({ email: payload.email, password: payload.password }).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.router.navigate(['/dashboard']);
+          },
+          error: () => {
+            this.isLoading = false;
+            this.router.navigate(['/login']);
+          }
+        });
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.message || 'Registration failed';
+        if (err.status === 409) {
+          this.errorMessage = 'A user with this email already exists.';
+        } else {
+          this.errorMessage = err.error?.message || 'Registration failed';
+        }
       }
     });
   }

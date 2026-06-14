@@ -1,8 +1,9 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseCardComponent, Course } from '../../shared/components/course-card/course-card';
 import { ButtonComponent } from '../../shared/ui/button/button';
 import { BadgeComponent } from '../../shared/ui/badge/badge';
+import { CoursesService } from '../../core/services/courses.service';
 
 @Component({
   selector: 'app-catalog',
@@ -118,7 +119,7 @@ import { BadgeComponent } from '../../shared/ui/badge/badge';
   `,
   styles: ``
 })
-export class CatalogComponent {
+export class CatalogComponent implements OnInit {
   categories = ['Architecture', 'Java', 'Database', 'DevOps', 'Security'];
   levels = ['Beginner', 'Intermediate', 'Advanced'];
 
@@ -126,70 +127,40 @@ export class CatalogComponent {
   selectedCategories = signal<string[]>([]);
   selectedLevels = signal<string[]>([]);
 
-  // Mock Data
-  allCourses: Course[] = [
-    {
-      id: '1',
-      title: 'Advanced NestJS Microservices',
-      description: 'Learn to build scalable, event-driven microservices using NestJS, RabbitMQ, and Redis. Perfect for scaling your applications.',
-      level: 'Advanced',
-      tag: 'Architecture',
-      duration: '14h 30m',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '2',
-      title: 'Spring Boot 3 Core Concepts',
-      description: 'Master the fundamentals of Spring Boot 3. Build RESTful APIs, manage security, and implement best practices.',
-      level: 'Beginner',
-      tag: 'Java',
-      duration: '8h 15m',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '3',
-      title: 'PostgreSQL Performance Tuning',
-      description: 'Deep dive into database internals. Learn how to analyze queries, create efficient indexes, and handle massive data.',
-      level: 'Intermediate',
-      tag: 'Database',
-      duration: '6h 45m',
-      image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '4',
-      title: 'Docker & Kubernetes for Developers',
-      description: 'Containerize your applications and orchestrate them using Kubernetes. A complete guide from local dev to production.',
-      level: 'Intermediate',
-      tag: 'DevOps',
-      duration: '12h 00m',
-      image: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '5',
-      title: 'OAuth2 and OIDC with Spring Security',
-      description: 'Secure your microservices architecture with enterprise-grade authentication and authorization patterns.',
-      level: 'Advanced',
-      tag: 'Security',
-      duration: '9h 20m',
-      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '6',
-      title: 'REST API Design Patterns',
-      description: 'Learn industry-standard patterns for designing intuitive, scalable, and versionable RESTful web services.',
-      level: 'Beginner',
-      tag: 'Architecture',
-      duration: '5h 10m',
-      image: 'https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    }
-  ];
+  private coursesService = inject(CoursesService);
+  
+  allCoursesSignal = signal<Course[]>([]);
+  isLoading = signal(true);
+
+  ngOnInit() {
+    this.coursesService.getCourses().subscribe({
+      next: (courses) => {
+        // Map backend courses to UI Course type
+        const mappedCourses: Course[] = courses.map((c: any) => ({
+          id: c.id.toString(),
+          title: c.title,
+          description: c.description || 'No description available.',
+          level: 'Beginner', // Default
+          tag: 'General', // Default
+          duration: '10h',
+          image: '/assets/images/course-placeholder.jpg' // Default or handle appropriately
+        }));
+        this.allCoursesSignal.set(mappedCourses);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load courses', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   filteredCourses = computed(() => {
     const q = this.searchQuery().toLowerCase();
     const cats = this.selectedCategories();
     const lvls = this.selectedLevels();
 
-    return this.allCourses.filter(course => {
+    return this.allCoursesSignal().filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(q) || course.description.toLowerCase().includes(q);
       const matchesCategory = cats.length === 0 || cats.includes(course.tag);
       const matchesLevel = lvls.length === 0 || lvls.includes(course.level);

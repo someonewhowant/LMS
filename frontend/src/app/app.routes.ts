@@ -16,6 +16,15 @@ export const routes: Routes = [
         loadComponent: () => import('./features/catalog/catalog.component').then(m => m.CatalogComponent),
       },
       {
+        path: 'courses/:id',
+        loadComponent: () => import('./features/course-details/course-details.component').then(m => m.CourseDetailsComponent),
+      },
+      {
+        path: 'player/:id',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/course-player/course-player.component').then(m => m.CoursePlayerComponent),
+      },
+      {
         path: 'articles',
         loadComponent: () => import('./features/articles/articles.component').then(m => m.ArticlesComponent),
       },

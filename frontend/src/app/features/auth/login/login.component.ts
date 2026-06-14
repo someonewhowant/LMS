@@ -141,7 +141,11 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.message || 'Invalid email or password';
+        if (err.status === 401) {
+          this.errorMessage = 'Invalid email or password';
+        } else {
+          this.errorMessage = err.error?.message || 'Login failed';
+        }
       }
     });
   }

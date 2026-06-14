@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { BadgeComponent } from '../../ui/badge/badge';
 import { ProgressBarComponent } from '../../ui/progress-bar/progress-bar';
 
@@ -17,9 +18,9 @@ export interface Course {
 @Component({
   selector: 'app-course-card',
   standalone: true,
-  imports: [CommonModule, BadgeComponent, ProgressBarComponent],
+  imports: [CommonModule, RouterLink, BadgeComponent, ProgressBarComponent],
   template: `
-<div class="group bg-surface-container rounded-xl overflow-hidden border border-outline-variant hover:border-primary/50 transition-all duration-300 flex flex-col h-full cursor-pointer hover:shadow-glow hover:-translate-y-1">
+<a [routerLink]="['/courses', course.id]" class="block group bg-surface-container rounded-xl overflow-hidden border border-outline-variant hover:border-primary/50 transition-all duration-300 flex flex-col h-full cursor-pointer hover:shadow-glow hover:-translate-y-1">
   <!-- Course Image/Cover -->
   <div class="relative h-48 w-full overflow-hidden bg-surface-container-high">
     <img *ngIf="course.image" [src]="course.image" [alt]="course.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -68,7 +69,7 @@ export interface Course {
       <app-progress-bar [progress]="course.progress" size="sm"></app-progress-bar>
     </div>
   </div>
-</div>
+</a>
   `,
   styles: `
     .hover\\:shadow-glow:hover {
