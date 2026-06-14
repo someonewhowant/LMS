@@ -8,6 +8,10 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingPageComponent),
+      },
+      {
+        path: 'courses',
+        loadComponent: () => import('./features/catalog/catalog.component').then(m => m.CatalogComponent),
       }
     ]
   },

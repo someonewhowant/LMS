@@ -1,22 +1,24 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { ButtonComponent } from '../../ui/button/button';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, RouterLink],
   template: `
 <header class="fixed top-0 w-full z-50 bg-surface/95 backdrop-blur-md h-16 flex items-center justify-between px-margin-mobile md:px-margin-desktop border-b border-outline-variant">
   <div class="flex items-center gap-md">
-    <div class="flex items-center gap-xs">
+    <a routerLink="/" class="flex items-center gap-xs cursor-pointer">
       <div class="h-8 w-8 rounded-sm bg-primary-container text-primary flex items-center justify-center font-bold">CB</div>
       <span class="font-display-lg-mobile text-[20px] text-primary tracking-tighter">CODEBLOG</span>
-    </div>
+    </a>
     <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center gap-md ml-lg">
-      <a class="text-primary font-label-caps text-label-caps hover:text-primary transition-colors border-b-2 border-primary pb-1" href="#">Learn</a>
+      <a routerLink="/courses" class="text-primary font-label-caps text-label-caps hover:text-primary transition-colors border-b-2 border-primary pb-1" href="#">Learn</a>
       <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors pb-1" href="#">Articles</a>
+
       <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors pb-1" href="#">Roadmaps</a>
       <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors pb-1" href="#">Community</a>
     </nav>
