@@ -14,9 +14,6 @@ async function bootstrap() {
   // Глобальный Exception Filter
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  // Глобальный Interceptor
-  app.useGlobalInterceptors(new TransformInterceptor());
-
   // Глобальный Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({

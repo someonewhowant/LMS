@@ -1,7 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { CoursesService } from '../../core/services/courses.service';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { Course } from '../../core/models/course.model';
 import { ButtonComponent } from '../../shared/ui/button/button';
 
@@ -72,11 +74,17 @@ import { ButtonComponent } from '../../shared/ui/button/button';
           <p class="text-body-sm text-on-surface-variant mt-1">Full lifetime access to this course.</p>
         </div>
 
-        <button app-button variant="primary" size="lg" [fullWidth]="true" [routerLink]="['/player', course()?.id]">
-          Start Learning Now
+        <button *ngIf="isEnrolled()" app-button variant="primary" size="lg" [fullWidth]="true" [routerLink]="['/player', course()?.id]">
+          Continue Learning
         </button>
 
-        <ul class="space-y-3 text-body-sm text-on-surface-variant">
+        <button *ngIf="!isEnrolled()" app-button variant="primary" size="lg" [fullWidth]="true" (click)="enroll()" [disabled]="isEnrolling()">
+          {{ isEnrolling() ? 'Enrolling...' : 'Enroll Now' }}
+        </button>
+        
+        <p *ngIf="enrollError()" class="text-error text-body-sm mt-2">{{ enrollError() }}</p>
+
+        <ul class="space-y-3 text-body-sm text-on-surface-variant mt-4">
           <li class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[18px] text-primary">check_circle</span>
             100% Online
@@ -104,10 +112,17 @@ import { ButtonComponent } from '../../shared/ui/button/button';
 })
 export class CourseDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private coursesService = inject(CoursesService);
+  private dashboardService = inject(DashboardService);
+  private authService = inject(AuthService);
 
   course = signal<Course | null>(null);
   isLoading = signal(true);
+  
+  isEnrolled = signal(false);
+  isEnrolling = signal(false);
+  enrollError = signal<string | null>(null);
 
   // Mock modules if backend relation isn't returning them yet
   mockModules: any[] = [
@@ -122,7 +137,7 @@ export class CourseDetailsComponent implements OnInit {
       this.coursesService.getCourseById(+id).subscribe({
         next: (data) => {
           this.course.set(data);
-          this.isLoading.set(false);
+          this.checkEnrollmentStatus(+id);
         },
         error: () => {
           this.isLoading.set(false);
@@ -131,5 +146,50 @@ export class CourseDetailsComponent implements OnInit {
     } else {
       this.isLoading.set(false);
     }
+  }
+
+  private checkEnrollmentStatus(courseId: number) {
+    if (!this.authService.isAuthenticated()) {
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.dashboardService.getEnrolledCourses().subscribe({
+      next: (enrollments) => {
+        const enrolled = enrollments.some(e => e.course.id === courseId);
+        this.isEnrolled.set(enrolled);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  enroll() {
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    const currentCourse = this.course();
+    if (!currentCourse) return;
+
+    this.isEnrolling.set(true);
+    this.enrollError.set(null);
+
+    this.dashboardService.enroll(+currentCourse.id).subscribe({
+      next: () => {
+        this.isEnrolled.set(true);
+        this.isEnrolling.set(false);
+        // Automatically redirect to player
+        this.router.navigate(['/player', currentCourse.id]);
+      },
+      error: (err) => {
+        console.error('Enrollment error:', err);
+        this.enrollError.set(err.error?.message || 'Failed to enroll in the course.');
+        this.isEnrolling.set(false);
+      }
+    });
   }
 }

@@ -49,10 +49,11 @@ export class AuthService {
   }
 
   login(credentials: any): Observable<any> {
-    return this.http.post<{access_token: string}>(`${API_URL}/login`, credentials).pipe(
+    return this.http.post<any>(`${API_URL}/login`, credentials).pipe(
       tap(response => {
-        if (response.access_token) {
-          this.tokenService.saveToken(response.access_token);
+        const token = response.access_token || response.data?.access_token;
+        if (token) {
+          this.tokenService.saveToken(token);
           this.checkAuthStatus();
         }
       })
@@ -60,10 +61,11 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post<{access_token: string}>(`${API_URL}/register`, userData).pipe(
+    return this.http.post<any>(`${API_URL}/register`, userData).pipe(
       tap(response => {
-        if (response.access_token) {
-          this.tokenService.saveToken(response.access_token);
+        const token = response.access_token || response.data?.access_token;
+        if (token) {
+          this.tokenService.saveToken(token);
           this.checkAuthStatus();
         }
       })

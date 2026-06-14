@@ -34,4 +34,8 @@ export class DashboardService {
   getEnrolledCourses(): Observable<EnrollmentResponse[]> {
     return this.http.get<EnrollmentResponse[]>(ENROLLMENTS_API);
   }
+
+  enroll(courseId: number): Observable<any> {
+    return this.http.post(ENROLLMENTS_API, { courseId });
+  }
 }
