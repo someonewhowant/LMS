@@ -4,9 +4,9 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     register(createUserDto: CreateUserDto): Promise<{
+        id: number;
         email: string;
         role: string;
-        id: number;
         points: number;
         lastLoginAt: Date | null;
         createdAt: Date;
@@ -15,5 +15,13 @@ export declare class AuthController {
     login(req: any): Promise<{
         access_token: string;
     }>;
-    getProfile(req: any): any;
+    getProfile(req: any): Promise<{
+        id: number;
+        email: string;
+        role: string;
+        points: number;
+        lastLoginAt: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
 }

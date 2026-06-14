@@ -34,7 +34,7 @@ let CoursesService = class CoursesService {
             include: {
                 teacher: { select: { id: true, email: true, role: true } },
                 modules: {
-                    include: { assignments: true },
+                    include: { assignments: true, quizzes: true },
                     orderBy: { order: 'asc' }
                 }
             }

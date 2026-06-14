@@ -1,8 +1,10 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { TrackActivityDto } from './dto/track-activity.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 export declare class AnalyticsService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private achievementsService;
+    constructor(prisma: PrismaService, achievementsService: AchievementsService);
     trackActivity(userId: number, dto: TrackActivityDto): Promise<{
         id: number;
         createdAt: Date;

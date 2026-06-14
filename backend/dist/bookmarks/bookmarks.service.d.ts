@@ -5,10 +5,10 @@ export declare class BookmarksService {
     constructor(prisma: PrismaService);
     create(userId: number, data: CreateBookmarkDto): Promise<{
         post: {
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
             content: string;
             published: boolean;
             categoryId: number;
@@ -23,22 +23,22 @@ export declare class BookmarksService {
     findAllByUser(userId: number): import(".prisma/client").Prisma.PrismaPromise<({
         post: {
             category: {
-                description: string | null;
-                name: string;
                 id: number;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
+                description: string | null;
             };
             tags: {
-                name: string;
                 id: number;
                 createdAt: Date;
+                name: string;
             }[];
         } & {
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
             content: string;
             published: boolean;
             categoryId: number;

@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Course } from '../models/course.model';
 
-const API_URL = 'http://localhost:3000/api/courses';
+import { environment } from '../../../environments/environment';
+
+const API_URL = `${environment.apiUrl}/api`;
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +14,26 @@ export class CoursesService {
   private http = inject(HttpClient);
 
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(API_URL);
+    return this.http.get<Course[]>(`${API_URL}/courses`);
   }
 
   getCourseById(id: number): Observable<Course> {
-    return this.http.get<Course>(`${API_URL}/${id}`);
+    return this.http.get<Course>(`${API_URL}/courses/${id}`);
+  }
+
+  createCourse(course: any): Observable<any> {
+    return this.http.post<any>(`${API_URL}/courses`, course);
+  }
+
+  createModule(module: any): Observable<any> {
+    return this.http.post<any>(`${API_URL}/course-modules`, module);
+  }
+
+  createAssignment(assignment: any): Observable<any> {
+    return this.http.post<any>(`${API_URL}/assignments`, assignment);
+  }
+
+  createQuiz(quiz: any): Observable<any> {
+    return this.http.post<any>(`${API_URL}/quizzes`, quiz);
   }
 }

@@ -10,12 +10,21 @@ export declare class AuthService {
         access_token: string;
     }>;
     register(createUserDto: CreateUserDto): Promise<{
+        id: number;
         email: string;
         role: string;
-        id: number;
         points: number;
         lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getUserProfile(userId: number): Promise<{
+        id: number;
+        email: string;
+        role: string;
+        points: number;
+        lastLoginAt: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
 }

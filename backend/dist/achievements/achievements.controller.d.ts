@@ -4,33 +4,33 @@ export declare class AchievementsController {
     private readonly achievementsService;
     constructor(achievementsService: AchievementsService);
     create(createAchievementDto: CreateAchievementDto): Promise<{
-        description: string;
-        name: string;
         id: number;
         points: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string;
         iconUrl: string | null;
         criteria: string;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
-        description: string;
-        name: string;
         id: number;
         points: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string;
         iconUrl: string | null;
         criteria: string;
     }[]>;
     getMyAchievements(req: any): import(".prisma/client").Prisma.PrismaPromise<({
         achievement: {
-            description: string;
-            name: string;
             id: number;
             points: number;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string;
             iconUrl: string | null;
             criteria: string;
         };
@@ -41,9 +41,9 @@ export declare class AchievementsController {
         achievementId: number;
     })[]>;
     getLeaderboard(): import(".prisma/client").Prisma.PrismaPromise<{
+        id: number;
         email: string;
         role: string;
-        id: number;
         points: number;
     }[]>;
 }

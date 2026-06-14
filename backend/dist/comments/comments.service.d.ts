@@ -6,9 +6,9 @@ export declare class CommentsService {
     constructor(prisma: PrismaService);
     create(authorId: number, data: CreateCommentDto): import(".prisma/client").Prisma.Prisma__CommentClient<{
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
         id: number;
@@ -20,9 +20,9 @@ export declare class CommentsService {
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     findAllByPost(postId: number): import(".prisma/client").Prisma.PrismaPromise<({
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
         id: number;
@@ -34,9 +34,9 @@ export declare class CommentsService {
     })[]>;
     update(id: number, authorId: number, data: UpdateCommentDto): Promise<{
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
         id: number;

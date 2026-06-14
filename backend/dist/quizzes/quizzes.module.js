@@ -10,11 +10,13 @@ exports.QuizzesModule = void 0;
 const common_1 = require("@nestjs/common");
 const quizzes_service_1 = require("./quizzes.service");
 const quizzes_controller_1 = require("./quizzes.controller");
+const achievements_module_1 = require("../achievements/achievements.module");
 let QuizzesModule = class QuizzesModule {
 };
 exports.QuizzesModule = QuizzesModule;
 exports.QuizzesModule = QuizzesModule = __decorate([
     (0, common_1.Module)({
+        imports: [achievements_module_1.AchievementsModule],
         controllers: [quizzes_controller_1.QuizzesController],
         providers: [quizzes_service_1.QuizzesService],
     })

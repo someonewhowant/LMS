@@ -5,28 +5,28 @@ export declare class TagsController {
     private readonly tagsService;
     constructor(tagsService: TagsService);
     create(createTagDto: CreateTagDto): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
+        name: string;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
-        name: string;
         id: number;
         createdAt: Date;
+        name: string;
     }[]>;
     findOne(id: number): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
+        name: string;
     }>;
     update(id: number, updateTagDto: UpdateTagDto): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
+        name: string;
     }>;
     remove(id: number): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
+        name: string;
     }>;
 }

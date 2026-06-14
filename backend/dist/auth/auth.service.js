@@ -78,6 +78,13 @@ let AuthService = class AuthService {
         const { password, ...result } = user;
         return result;
     }
+    async getUserProfile(userId) {
+        const user = await this.usersService.findOne(userId);
+        if (!user)
+            return null;
+        const { password, ...result } = user;
+        return result;
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

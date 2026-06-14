@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Course } from '../models/course.model';
 
-const ANALYTICS_API = 'http://localhost:3000/api/analytics';
-const ENROLLMENTS_API = 'http://localhost:3000/api/enrollments';
+import { environment } from '../../../environments/environment';
+
+const ANALYTICS_API = `${environment.apiUrl}/api/analytics`;
+const ENROLLMENTS_API = `${environment.apiUrl}/api/enrollments`;
 
 export interface DashboardStats {
   points: number;
@@ -37,5 +39,9 @@ export class DashboardService {
 
   enroll(courseId: number): Observable<any> {
     return this.http.post(ENROLLMENTS_API, { courseId });
+  }
+
+  trackActivity(action: string, details?: string): Observable<any> {
+    return this.http.post(`${ANALYTICS_API}/track`, { action, details });
   }
 }

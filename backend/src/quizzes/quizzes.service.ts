@@ -2,10 +2,14 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Injectable()
 export class QuizzesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private achievementsService: AchievementsService
+  ) {}
 
   async create(teacherId: number, userRole: string, data: CreateQuizDto) {
     const module = await this.prisma.courseModule.findUnique({
@@ -100,14 +104,44 @@ export class QuizzesService {
       }
     }
 
-    return this.prisma.userQuizResult.create({
-      data: {
-        userId,
-        quizId: id,
-        score,
-        total,
+    // Calculate XP (10 points per correct answer)
+    const xpEarned = score * 10;
+
+    // Use transaction to update user points, log activity and create result
+    const result = await this.prisma.$transaction(async (tx) => {
+      const quizResult = await tx.userQuizResult.create({
+        data: {
+          userId,
+          quizId: id,
+          score,
+          total,
+        }
+      });
+
+      if (xpEarned > 0) {
+        await tx.user.update({
+          where: { id: userId },
+          data: { points: { increment: xpEarned } }
+        });
       }
+
+      await tx.userActivity.create({
+        data: {
+          userId,
+          action: 'SUBMIT_QUIZ',
+          details: `Quiz ID: ${id}, Score: ${score}/${total}, XP Earned: ${xpEarned}`,
+        }
+      });
+
+      return quizResult;
     });
+
+    // Check and grant perfect score achievement if applicable
+    if (score === total && total > 0) {
+      await this.achievementsService.grantAchievement(userId, 'PERFECT_QUIZ');
+    }
+
+    return result;
   }
 
   async getMyResults(userId: number) {

@@ -1,9 +1,11 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 export declare class QuizzesService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private achievementsService;
+    constructor(prisma: PrismaService, achievementsService: AchievementsService);
     create(teacherId: number, userRole: string, data: CreateQuizDto): Promise<({
         questions: ({
             options: {
@@ -20,11 +22,11 @@ export declare class QuizzesService {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }) | null>;
     findOne(id: number): Promise<{
@@ -42,11 +44,11 @@ export declare class QuizzesService {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }>;
     getQuizForStudent(id: number): Promise<{
@@ -63,11 +65,11 @@ export declare class QuizzesService {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }>;
     submitQuiz(id: number, userId: number, dto: SubmitQuizDto): Promise<{
@@ -80,11 +82,11 @@ export declare class QuizzesService {
     }>;
     getMyResults(userId: number): Promise<({
         quiz: {
-            description: string | null;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string | null;
             moduleId: number;
         };
     } & {

@@ -37,4 +37,11 @@ export class AuthService {
     const { password, ...result } = user;
     return result;
   }
+
+  async getUserProfile(userId: number) {
+    const user = await this.usersService.findOne(userId);
+    if (!user) return null;
+    const { password, ...result } = user;
+    return result;
+  }
 }

@@ -5,21 +5,21 @@ export declare class AssignmentsService {
     private prisma;
     constructor(prisma: PrismaService);
     create(teacherId: number, userRole: string, data: CreateAssignmentDto): Promise<{
-        description: string;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string;
         maxScore: number;
         dueDate: Date | null;
         moduleId: number;
     }>;
     findAllByModule(moduleId: number): import(".prisma/client").Prisma.PrismaPromise<{
-        description: string;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string;
         maxScore: number;
         dueDate: Date | null;
         moduleId: number;
@@ -27,49 +27,49 @@ export declare class AssignmentsService {
     findOne(id: number): Promise<{
         module: {
             course: {
-                description: string | null;
-                title: string;
                 id: number;
                 createdAt: Date;
                 updatedAt: Date;
+                title: string;
+                description: string | null;
                 isPublished: boolean;
                 teacherId: number;
             };
         } & {
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
             content: string | null;
             order: number;
             courseId: number;
         };
     } & {
-        description: string;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string;
         maxScore: number;
         dueDate: Date | null;
         moduleId: number;
     }>;
     update(id: number, teacherId: number, userRole: string, data: UpdateAssignmentDto): Promise<{
-        description: string;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string;
         maxScore: number;
         dueDate: Date | null;
         moduleId: number;
     }>;
     remove(id: number, teacherId: number, userRole: string): Promise<{
-        description: string;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string;
         maxScore: number;
         dueDate: Date | null;
         moduleId: number;

@@ -6,98 +6,98 @@ export declare class CourseModulesController {
     constructor(courseModulesService: CourseModulesService);
     create(req: any, createCourseModuleDto: CreateCourseModuleDto): Promise<{
         assignments: {
-            description: string;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string;
             maxScore: number;
             dueDate: Date | null;
             moduleId: number;
         }[];
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string | null;
         order: number;
         courseId: number;
     }>;
     findAllByCourse(courseId: number): import(".prisma/client").Prisma.PrismaPromise<({
         assignments: {
-            description: string;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string;
             maxScore: number;
             dueDate: Date | null;
             moduleId: number;
         }[];
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string | null;
         order: number;
         courseId: number;
     })[]>;
     findOne(id: number): Promise<{
         course: {
-            description: string | null;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string | null;
             isPublished: boolean;
             teacherId: number;
         };
         assignments: {
-            description: string;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string;
             maxScore: number;
             dueDate: Date | null;
             moduleId: number;
         }[];
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string | null;
         order: number;
         courseId: number;
     }>;
     update(req: any, id: number, updateCourseModuleDto: UpdateCourseModuleDto): Promise<{
         assignments: {
-            description: string;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string;
             maxScore: number;
             dueDate: Date | null;
             moduleId: number;
         }[];
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string | null;
         order: number;
         courseId: number;
     }>;
     remove(req: any, id: number): Promise<{
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string | null;
         order: number;
         courseId: number;

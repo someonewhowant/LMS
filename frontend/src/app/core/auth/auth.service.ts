@@ -5,8 +5,9 @@ import { Observable, tap, catchError, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 
-// Environment could be imported here, using hardcoded for simplicity
-const API_URL = 'http://localhost:3000/api/auth';
+import { environment } from '../../../environments/environment';
+
+const API_URL = `${environment.apiUrl}/api/auth`;
 
 @Injectable({
   providedIn: 'root'
@@ -30,22 +31,36 @@ export class AuthService {
 
   private checkAuthStatus() {
     if (this.tokenService.hasToken()) {
-      // In a real app, you would fetch user profile here
-      // this.getProfile().subscribe();
-      
-      // Mocking user profile from token payload
+      // Synchronously set initial profile from token payload to avoid route guard redirects
       const payload = this.tokenService.getPayload();
       if (payload) {
         this.currentUserSignal.set({
           id: parseInt(payload.sub) || 1,
-          email: payload.email || 'user@example.com',
+          email: payload.email || '',
           role: payload.role || 'STUDENT',
-          points: 1250,
+          points: 0,
           createdAt: new Date(),
           updatedAt: new Date()
         });
       }
+
+      // Fetch fresh profile details from the backend
+      this.getProfile().subscribe({
+        error: () => this.logout()
+      });
     }
+  }
+
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${API_URL}/me`).pipe(
+      tap(user => {
+        this.currentUserSignal.set(user);
+      }),
+      catchError(err => {
+        this.logout();
+        return throwError(() => err);
+      })
+    );
   }
 
   login(credentials: any): Observable<any> {

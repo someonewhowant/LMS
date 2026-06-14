@@ -57,6 +57,10 @@ export const routes: Routes = [
       {
         path: 'constructor',
         loadComponent: () => import('./features/course-constructor/course-constructor.component').then(m => m.CourseConstructorComponent),
+      },
+      {
+        path: 'leaderboard',
+        loadComponent: () => import('./features/dashboard/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent),
       }
     ]
   }

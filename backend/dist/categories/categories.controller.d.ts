@@ -5,38 +5,38 @@ export declare class CategoriesController {
     private readonly categoriesService;
     constructor(categoriesService: CategoriesService);
     create(createCategoryDto: CreateCategoryDto): Promise<{
-        description: string | null;
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
-        description: string | null;
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }[]>;
     findOne(id: number): Promise<{
-        description: string | null;
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
     update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<{
-        description: string | null;
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
     remove(id: number): Promise<{
-        description: string | null;
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        description: string | null;
     }>;
 }

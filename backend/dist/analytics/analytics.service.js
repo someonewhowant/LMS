@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnalyticsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const achievements_service_1 = require("../achievements/achievements.service");
 let AnalyticsService = class AnalyticsService {
     prisma;
-    constructor(prisma) {
+    achievementsService;
+    constructor(prisma, achievementsService) {
         this.prisma = prisma;
+        this.achievementsService = achievementsService;
     }
     async trackActivity(userId, dto) {
         return this.prisma.userActivity.create({
@@ -27,6 +30,7 @@ let AnalyticsService = class AnalyticsService {
         });
     }
     async getDashboard(userId) {
+        await this.achievementsService.grantAchievement(userId, 'FIRST_STEPS');
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             include: {
@@ -57,6 +61,7 @@ let AnalyticsService = class AnalyticsService {
 exports.AnalyticsService = AnalyticsService;
 exports.AnalyticsService = AnalyticsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        achievements_service_1.AchievementsService])
 ], AnalyticsService);
 //# sourceMappingURL=analytics.service.js.map

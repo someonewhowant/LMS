@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuizzesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const achievements_service_1 = require("../achievements/achievements.service");
 let QuizzesService = class QuizzesService {
     prisma;
-    constructor(prisma) {
+    achievementsService;
+    constructor(prisma, achievementsService) {
         this.prisma = prisma;
+        this.achievementsService = achievementsService;
     }
     async create(teacherId, userRole, data) {
         const module = await this.prisma.courseModule.findUnique({
@@ -103,14 +106,35 @@ let QuizzesService = class QuizzesService {
                 }
             }
         }
-        return this.prisma.userQuizResult.create({
-            data: {
-                userId,
-                quizId: id,
-                score,
-                total,
+        const xpEarned = score * 10;
+        const result = await this.prisma.$transaction(async (tx) => {
+            const quizResult = await tx.userQuizResult.create({
+                data: {
+                    userId,
+                    quizId: id,
+                    score,
+                    total,
+                }
+            });
+            if (xpEarned > 0) {
+                await tx.user.update({
+                    where: { id: userId },
+                    data: { points: { increment: xpEarned } }
+                });
             }
+            await tx.userActivity.create({
+                data: {
+                    userId,
+                    action: 'SUBMIT_QUIZ',
+                    details: `Quiz ID: ${id}, Score: ${score}/${total}, XP Earned: ${xpEarned}`,
+                }
+            });
+            return quizResult;
         });
+        if (score === total && total > 0) {
+            await this.achievementsService.grantAchievement(userId, 'PERFECT_QUIZ');
+        }
+        return result;
     }
     async getMyResults(userId) {
         return this.prisma.userQuizResult.findMany({
@@ -123,6 +147,7 @@ let QuizzesService = class QuizzesService {
 exports.QuizzesService = QuizzesService;
 exports.QuizzesService = QuizzesService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        achievements_service_1.AchievementsService])
 ], QuizzesService);
 //# sourceMappingURL=quizzes.service.js.map

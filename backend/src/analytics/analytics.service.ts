@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TrackActivityDto } from './dto/track-activity.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private achievementsService: AchievementsService
+  ) {}
 
   async trackActivity(userId: number, dto: TrackActivityDto) {
     return this.prisma.userActivity.create({
@@ -17,6 +21,9 @@ export class AnalyticsService {
   }
 
   async getDashboard(userId: number) {
+    // Award FIRST_STEPS achievement if not already awarded when they access dashboard
+    await this.achievementsService.grantAchievement(userId, 'FIRST_STEPS');
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {

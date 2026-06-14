@@ -20,11 +20,11 @@ export declare class QuizzesController {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }) | null>;
     findOneForEdit(id: number): Promise<{
@@ -42,11 +42,11 @@ export declare class QuizzesController {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }>;
     getQuizForStudent(id: number): Promise<{
@@ -63,11 +63,11 @@ export declare class QuizzesController {
             quizId: number;
         })[];
     } & {
-        description: string | null;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
+        description: string | null;
         moduleId: number;
     }>;
     submitQuiz(req: any, id: number, dto: SubmitQuizDto): Promise<{
@@ -80,11 +80,11 @@ export declare class QuizzesController {
     }>;
     getMyResults(req: any): Promise<({
         quiz: {
-            description: string | null;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string | null;
             moduleId: number;
         };
     } & {

@@ -6,27 +6,27 @@ export declare class PostsController {
     constructor(postsService: PostsService);
     create(req: any, createPostDto: CreatePostDto): Promise<{
         category: {
-            description: string | null;
-            name: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string | null;
         };
         tags: {
-            name: string;
             id: number;
             createdAt: Date;
+            name: string;
         }[];
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string;
         published: boolean;
         categoryId: number;
@@ -34,27 +34,27 @@ export declare class PostsController {
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         category: {
-            description: string | null;
-            name: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string | null;
         };
         tags: {
-            name: string;
             id: number;
             createdAt: Date;
+            name: string;
         }[];
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string;
         published: boolean;
         categoryId: number;
@@ -62,27 +62,27 @@ export declare class PostsController {
     })[]>;
     findOne(id: number): Promise<{
         category: {
-            description: string | null;
-            name: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string | null;
         };
         tags: {
-            name: string;
             id: number;
             createdAt: Date;
+            name: string;
         }[];
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string;
         published: boolean;
         categoryId: number;
@@ -90,37 +90,37 @@ export declare class PostsController {
     }>;
     update(id: number, updatePostDto: UpdatePostDto): Promise<{
         category: {
-            description: string | null;
-            name: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            description: string | null;
         };
         tags: {
-            name: string;
             id: number;
             createdAt: Date;
+            name: string;
         }[];
         author: {
+            id: number;
             email: string;
             role: string;
-            id: number;
         };
     } & {
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string;
         published: boolean;
         categoryId: number;
         authorId: number;
     }>;
     remove(id: number): Promise<{
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        title: string;
         content: string;
         published: boolean;
         categoryId: number;

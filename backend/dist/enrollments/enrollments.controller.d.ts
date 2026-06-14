@@ -5,11 +5,11 @@ export declare class EnrollmentsController {
     constructor(enrollmentsService: EnrollmentsService);
     create(req: any, createEnrollmentDto: CreateEnrollmentDto): Promise<{
         course: {
-            description: string | null;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string | null;
             isPublished: boolean;
             teacherId: number;
         };
@@ -22,16 +22,16 @@ export declare class EnrollmentsController {
     findAll(req: any): import(".prisma/client").Prisma.PrismaPromise<({
         course: {
             teacher: {
+                id: number;
                 email: string;
                 role: string;
-                id: number;
             };
         } & {
-            description: string | null;
-            title: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            title: string;
+            description: string | null;
             isPublished: boolean;
             teacherId: number;
         };

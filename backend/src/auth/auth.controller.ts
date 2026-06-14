@@ -31,6 +31,6 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Получение профиля текущего пользователя' })
   getProfile(@Request() req: any) {
-    return req.user;
+    return this.authService.getUserProfile(req.user.id);
   }
 }

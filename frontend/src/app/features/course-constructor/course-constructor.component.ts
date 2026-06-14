@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { CoursesService } from '../../core/services/courses.service';
 import { ButtonComponent } from '../../shared/ui/button/button';
 
@@ -286,35 +287,78 @@ export class CourseConstructorComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.courseForm.invalid) {
       this.courseForm.markAllAsTouched();
       return;
     }
 
     this.isSubmitting = true;
-    
     const formValue = this.courseForm.value;
-    
-    // Prepare backend payload (mocking creation since backend might need sequential API calls for nested relations)
-    const payload = {
-      title: formValue.title,
-      description: formValue.description,
-      isPublished: true
-    };
 
-    console.log('Publishing course with full structure:', formValue);
+    try {
+      // 1. Create Course
+      const coursePayload = {
+        title: formValue.title,
+        description: formValue.description,
+        isPublished: true
+      };
+      const course = await firstValueFrom(this.coursesService.createCourse(coursePayload));
+      const courseId = course.id;
 
-    // Call API
-    // In a complete implementation, this would:
-    // 1. POST /courses
-    // 2. Loop and POST /course-modules
-    // 3. Loop and POST /assignments and /quizzes
-    
-    // For now, let's just simulate the backend delay and navigate
-    setTimeout(() => {
+      // 2. Loop and Create Modules
+      for (let mIndex = 0; mIndex < formValue.modules.length; mIndex++) {
+        const moduleVal = formValue.modules[mIndex];
+        const modulePayload = {
+          title: moduleVal.title,
+          content: moduleVal.content,
+          order: mIndex + 1,
+          courseId: courseId
+        };
+        const createdModule = await firstValueFrom(this.coursesService.createModule(modulePayload));
+        const moduleId = createdModule.id;
+
+        // 3. Create Assignments (lessons)
+        for (const assignmentVal of moduleVal.assignments) {
+          const assignmentPayload = {
+            title: assignmentVal.title,
+            description: assignmentVal.content,
+            moduleId: moduleId
+          };
+          await firstValueFrom(this.coursesService.createAssignment(assignmentPayload));
+        }
+
+        // 4. Create Quizzes
+        for (const quizVal of moduleVal.quizzes) {
+          // Parse questions
+          const questionsPayload = quizVal.questions.map((qVal: any) => {
+            const rawOptions = qVal.options.split(',').map((o: string) => o.trim());
+            const correctText = qVal.correctAnswer.trim();
+            const options = rawOptions.map((optText: string) => ({
+              text: optText,
+              isCorrect: optText.toLowerCase() === correctText.toLowerCase()
+            }));
+            return {
+              text: qVal.text,
+              options
+            };
+          });
+
+          const quizPayload = {
+            title: quizVal.title,
+            moduleId: moduleId,
+            questions: questionsPayload
+          };
+          await firstValueFrom(this.coursesService.createQuiz(quizPayload));
+        }
+      }
+
       this.isSubmitting = false;
       this.router.navigate(['/dashboard']);
-    }, 1500);
+    } catch (err) {
+      console.error('Error creating course curriculum:', err);
+      this.isSubmitting = false;
+      alert('Error creating course. Please try again.');
+    }
   }
 }
