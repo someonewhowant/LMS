@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AvatarComponent } from '../../ui/avatar/avatar';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,10 +10,10 @@ import { AvatarComponent } from '../../ui/avatar/avatar';
   template: `
 <aside class="h-full w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-md px-sm">
   <div class="flex items-center gap-sm px-xs mb-lg">
-    <app-avatar src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFTqfDayGYrd2f-VGMscwOjM7e0emx1Zv5efmuv1M4346WNlcojoG4sKAGW2FHKDjzAtlmF0K74RfYLfxVjP5Fg0zF822oy1QVMV3iwTrQ4SAtx5LaIuLgiHnUpOWvpdpOiL9ZMb-baUjm0cs_FiFc8iJWuHnkCpf0HKY9LAPuwp7Rnd-8qdvgibA3c3rD94e7mCkoLeu1JpvygqhQl4V6sWEtcDfHGErpVj0pVJRXaDFj-vEKz3VbSSCKfyf5fU2vBiiUEJpSxKjo" size="md" alt="Developer Student"></app-avatar>
+    <app-avatar [alt]="userEmail()"></app-avatar>
     <div>
-      <div class="font-label-caps text-label-caps text-on-surface">Developer Student</div>
-      <div class="text-[10px] text-primary font-bold tracking-widest">PRO PLAN</div>
+      <div class="font-label-caps text-label-caps text-on-surface text-ellipsis overflow-hidden max-w-[150px]">{{ userEmail() }}</div>
+      <div class="text-[10px] text-primary font-bold tracking-widest">{{ userRole() }}</div>
     </div>
   </div>
   <nav class="flex-1 space-y-xs overflow-y-auto custom-scrollbar">
@@ -42,7 +43,7 @@ import { AvatarComponent } from '../../ui/avatar/avatar';
       <span class="material-symbols-outlined">help</span>
       <span>Support</span>
     </a>
-    <a class="flex items-center gap-sm px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-150 ease-in-out font-label-caps text-label-caps cursor-pointer">
+    <a (click)="logout()" class="flex items-center gap-sm px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-all duration-150 ease-in-out font-label-caps text-label-caps cursor-pointer">
       <span class="material-symbols-outlined">logout</span>
       <span>Sign Out</span>
     </a>
@@ -51,6 +52,21 @@ import { AvatarComponent } from '../../ui/avatar/avatar';
   `,
   styles: ``
 })
-export class Sidebar {}
+export class Sidebar {
+  authService = inject(AuthService);
+  router = inject(Router);
+
+  userEmail() {
+    return this.authService.currentUser()?.email?.split('@')[0] || 'User';
+  }
+
+  userRole() {
+    return this.authService.userRole() || 'STUDENT';
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+}
 
 

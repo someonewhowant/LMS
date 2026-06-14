@@ -20,12 +20,20 @@ import { AuthService } from '../../core/auth/auth.service';
       <!-- Decor -->
       <div class="absolute right-0 top-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
       
-      <div class="relative z-10">
-        <h1 class="font-display-md text-[32px] font-bold text-on-surface mb-2">Welcome back, {{ userEmail() }}!</h1>
-        <p class="text-body-md text-on-surface-variant mb-lg max-w-xl">
-          You're doing great. Keep the streak alive!
-        </p>
-        <button app-button variant="primary" size="md">Continue Learning</button>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="font-display-md text-[32px] font-bold text-on-surface mb-2">Welcome back, {{ userEmail() }}!</h1>
+          <p class="text-body-md text-on-surface-variant mb-lg max-w-xl">
+            You're doing great. Keep the streak alive!
+          </p>
+          <div class="flex gap-4">
+            <button app-button variant="primary" size="md">Continue Learning</button>
+            <button *ngIf="isTeacher()" app-button variant="secondary" size="md" routerLink="/dashboard/constructor">
+               <span class="material-symbols-outlined text-[20px] mr-2">add_box</span>
+               Create New Course
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -105,6 +113,10 @@ export class DashboardComponent implements OnInit {
   
   userEmail = computed(() => {
     return this.authService.currentUser()?.email?.split('@')[0] || 'Student';
+  });
+
+  isTeacher = computed(() => {
+    return this.authService.userRole() === 'TEACHER' || this.authService.userRole() === 'ADMIN';
   });
 
   roadmapNodes: RoadmapNode[] = [
