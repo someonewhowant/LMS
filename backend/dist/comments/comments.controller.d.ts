@@ -7,8 +7,8 @@ export declare class CommentsController {
     create(req: any, createCommentDto: CreateCommentDto): import(".prisma/client").Prisma.Prisma__CommentClient<{
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         id: number;
@@ -21,8 +21,8 @@ export declare class CommentsController {
     findAllByPost(postId: number): import(".prisma/client").Prisma.PrismaPromise<({
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         id: number;
@@ -35,8 +35,8 @@ export declare class CommentsController {
     update(req: any, id: number, updateCommentDto: UpdateCommentDto): Promise<{
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         id: number;

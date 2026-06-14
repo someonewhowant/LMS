@@ -19,8 +19,8 @@ export declare class PostsService {
         }[];
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         title: string;
@@ -47,8 +47,8 @@ export declare class PostsService {
         }[];
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         title: string;
@@ -75,8 +75,8 @@ export declare class PostsService {
         }[];
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         title: string;
@@ -103,8 +103,8 @@ export declare class PostsService {
         }[];
         author: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         title: string;

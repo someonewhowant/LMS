@@ -2,13 +2,12 @@ import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseCardComponent, Course } from '../../shared/components/course-card/course-card';
 import { ButtonComponent } from '../../shared/ui/button/button';
-import { BadgeComponent } from '../../shared/ui/badge/badge';
 import { CoursesService } from '../../core/services/courses.service';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, CourseCardComponent, ButtonComponent, BadgeComponent],
+  imports: [CommonModule, CourseCardComponent, ButtonComponent],
   template: `
 <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
   <!-- Header Section -->

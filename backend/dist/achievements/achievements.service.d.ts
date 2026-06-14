@@ -59,8 +59,8 @@ export declare class AchievementsService {
     })[]>;
     getLeaderboard(): import(".prisma/client").Prisma.PrismaPromise<{
         email: string;
-        id: number;
         role: string;
+        id: number;
         points: number;
     }[]>;
 }

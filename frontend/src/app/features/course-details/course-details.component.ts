@@ -110,7 +110,7 @@ export class CourseDetailsComponent implements OnInit {
   isLoading = signal(true);
 
   // Mock modules if backend relation isn't returning them yet
-  mockModules = [
+  mockModules: any[] = [
     { title: 'Introduction & Setup', content: 'Get your development environment ready.' },
     { title: 'Core Architecture', content: 'Understand the underlying principles.' },
     { title: 'Advanced Topics', content: 'Master the complex patterns.' }

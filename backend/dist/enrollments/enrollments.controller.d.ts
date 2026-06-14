@@ -23,8 +23,8 @@ export declare class EnrollmentsController {
         course: {
             teacher: {
                 email: string;
-                id: number;
                 role: string;
+                id: number;
             };
         } & {
             description: string | null;

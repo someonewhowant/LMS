@@ -1,12 +1,11 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArticleCardComponent, Article } from '../../shared/components/article-card/article-card';
-import { BadgeComponent } from '../../shared/ui/badge/badge';
 
 @Component({
   selector: 'app-articles',
   standalone: true,
-  imports: [CommonModule, ArticleCardComponent, BadgeComponent],
+  imports: [CommonModule, ArticleCardComponent],
   template: `
 <div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
   <!-- Header Section -->
@@ -31,21 +30,21 @@ import { BadgeComponent } from '../../shared/ui/badge/badge';
       <div class="p-xl flex flex-col justify-center md:w-1/2">
         <div class="flex items-center gap-xs text-on-surface-variant text-[12px] font-label-caps mb-4">
           <span class="material-symbols-outlined text-[16px]">schedule</span>
-          <span>{{ featuredArticle()?.readTime }}</span>
+          <span>{{ featuredArticle().readTime }}</span>
           <span class="mx-2">•</span>
-          <span>{{ featuredArticle()?.date }}</span>
+          <span>{{ featuredArticle().date }}</span>
         </div>
         <h3 class="text-[28px] font-bold text-on-surface mb-4 leading-tight group-hover:text-primary transition-colors">
-          {{ featuredArticle()?.title }}
+          {{ featuredArticle().title }}
         </h3>
         <p class="text-on-surface-variant text-body-lg mb-lg line-clamp-3">
-          {{ featuredArticle()?.excerpt }}
+          {{ featuredArticle().excerpt }}
         </p>
         <div class="flex items-center gap-sm mt-auto">
           <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden">
-             <img *ngIf="featuredArticle()?.author?.avatar" [src]="featuredArticle()?.author?.avatar" class="w-full h-full object-cover">
+             <img *ngIf="featuredArticle().author.avatar" [src]="featuredArticle().author.avatar" class="w-full h-full object-cover">
           </div>
-          <span class="text-on-surface text-[14px] font-bold">{{ featuredArticle()?.author?.name }}</span>
+          <span class="text-on-surface text-[14px] font-bold">{{ featuredArticle().author.name }}</span>
         </div>
       </div>
     </div>

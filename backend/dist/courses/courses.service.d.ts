@@ -7,8 +7,8 @@ export declare class CoursesService {
     create(teacherId: number, data: CreateCourseDto): import(".prisma/client").Prisma.Prisma__CourseClient<{
         teacher: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         description: string | null;
@@ -22,8 +22,8 @@ export declare class CoursesService {
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         teacher: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         description: string | null;
@@ -37,8 +37,8 @@ export declare class CoursesService {
     findOne(id: number): Promise<{
         teacher: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
         modules: ({
             assignments: {
@@ -72,8 +72,8 @@ export declare class CoursesService {
     update(id: number, teacherId: number, userRole: string, data: UpdateCourseDto): Promise<{
         teacher: {
             email: string;
-            id: number;
             role: string;
+            id: number;
         };
     } & {
         description: string | null;

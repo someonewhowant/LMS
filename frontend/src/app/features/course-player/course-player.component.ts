@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CoursesService } from '../../core/services/courses.service';
 import { Course } from '../../core/models/course.model';
 import { ButtonComponent } from '../../shared/ui/button/button';
@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../shared/ui/button/button';
 @Component({
   selector: 'app-course-player',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, ButtonComponent],
   template: `
 <div class="h-[calc(100vh-64px)] flex overflow-hidden bg-background">
   <!-- Sidebar Navigation -->

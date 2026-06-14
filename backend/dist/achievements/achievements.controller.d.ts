@@ -42,8 +42,8 @@ export declare class AchievementsController {
     })[]>;
     getLeaderboard(): import(".prisma/client").Prisma.PrismaPromise<{
         email: string;
-        id: number;
         role: string;
+        id: number;
         points: number;
     }[]>;
 }
