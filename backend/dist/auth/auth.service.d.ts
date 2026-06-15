@@ -10,6 +10,7 @@ export declare class AuthService {
         access_token: string;
     }>;
     register(createUserDto: CreateUserDto): Promise<{
+        access_token: string;
         id: number;
         email: string;
         role: string;

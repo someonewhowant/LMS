@@ -76,7 +76,11 @@ let AuthService = class AuthService {
         }
         const user = await this.usersService.create(createUserDto);
         const { password, ...result } = user;
-        return result;
+        const payload = { email: user.email, sub: user.id, role: user.role };
+        return {
+            ...result,
+            access_token: this.jwtService.sign(payload),
+        };
     }
     async getUserProfile(userId) {
         const user = await this.usersService.findOne(userId);

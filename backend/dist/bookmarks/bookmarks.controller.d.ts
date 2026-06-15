@@ -11,8 +11,8 @@ export declare class BookmarksController {
             title: string;
             content: string;
             published: boolean;
-            categoryId: number;
             authorId: number;
+            categoryId: number;
         };
     } & {
         id: number;
@@ -41,8 +41,8 @@ export declare class BookmarksController {
             title: string;
             content: string;
             published: boolean;
-            categoryId: number;
             authorId: number;
+            categoryId: number;
         };
     } & {
         id: number;
