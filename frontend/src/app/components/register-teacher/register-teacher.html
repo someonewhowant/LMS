@@ -1,0 +1,266 @@
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm dark:shadow-none docked full-width top-0 z-50">
+  <nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16">
+    <div class="flex items-center gap-3" routerLink="/login" class="cursor-pointer flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary dark:text-inverse-primary" style="font-size: 28px;">school</span>
+      <span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">EduFlow</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors px-3 py-1 rounded-lg" href="#">Courses</a>
+      <a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors px-3 py-1 rounded-lg" href="#">Mentors</a>
+      <a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary px-3 py-1" routerLink="/register/teacher">Become a Teacher</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" routerLink="/login">Log In</button>
+      <button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all active:scale-95" routerLink="/register/student">Sign Up</button>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center py-12 px-margin-mobile">
+  <div class="max-w-container-max w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <!-- Hero / Left Section -->
+    <div class="lg:col-span-5 space-y-6">
+      <div class="space-y-4">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md">
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          Instructor Program
+        </span>
+        <h1 class="font-headline-xl text-headline-xl text-on-background">Join as an Instructor</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">Empower students and share your knowledge. Join a global community of educators dedicated to academic excellence and modern skill-building.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 pt-4">
+        <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">groups</span>
+          <div>
+            <h3 class="font-label-md text-label-md text-on-surface">Global Reach</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Connect with thousands of students worldwide.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">insights</span>
+          <div>
+            <h3 class="font-label-md text-label-md text-on-surface">Growth Tools</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Advanced analytics to track student progress.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registration Form Card -->
+    <div class="lg:col-span-7 bg-surface-container-lowest p-8 md:p-10 rounded-xl shadow-[0px_4px_12px_rgba(79,70,229,0.1)] border border-outline-variant/20">
+      @if (errorMessage()) {
+        <div class="mb-4 p-3 rounded bg-error-container text-on-error-container text-body-sm flex items-center gap-2 border border-error/20">
+          <span class="material-symbols-outlined text-error" style="font-size: 20px;">error</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (isSuccess()) {
+        <div class="mb-4 p-4 rounded bg-tertiary-container/10 text-tertiary-container text-body-md flex flex-col items-center gap-2 border border-tertiary-container/20">
+          <span class="material-symbols-outlined text-tertiary-container" style="font-size: 32px;">check_circle</span>
+          <span class="font-bold">Welcome Aboard!</span>
+          <span class="text-body-sm">Registration successful. Redirecting to login...</span>
+        </div>
+      }
+
+      <form class="space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Full Name -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="fullName">Full Name</label>
+              @if (registerForm.controls.fullName.invalid && registerForm.controls.fullName.touched) {
+                <span class="text-error text-label-sm">Required (min 2 chars)</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+              <input
+                class="w-full pl-10 pr-4 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.fullName.invalid && registerForm.controls.fullName.touched"
+                [class.border-outline-variant]="!(registerForm.controls.fullName.invalid && registerForm.controls.fullName.touched)"
+                id="fullName"
+                formControlName="fullName"
+                placeholder="Dr. Jane Doe"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="email">Email Address</label>
+              @if (registerForm.controls.email.invalid && registerForm.controls.email.touched) {
+                <span class="text-error text-label-sm">Enter a valid email</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">mail</span>
+              <input
+                class="w-full pl-10 pr-4 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.email.invalid && registerForm.controls.email.touched"
+                [class.border-outline-variant]="!(registerForm.controls.email.invalid && registerForm.controls.email.touched)"
+                id="email"
+                formControlName="email"
+                placeholder="jane.doe@university.edu"
+                type="email"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Specialization -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="subject">Specialization/Subject Area</label>
+              @if (registerForm.controls.subject.invalid && registerForm.controls.subject.touched) {
+                <span class="text-error text-label-sm">Required</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">book</span>
+              <select
+                class="w-full pl-10 pr-10 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.subject.invalid && registerForm.controls.subject.touched"
+                [class.border-outline-variant]="!(registerForm.controls.subject.invalid && registerForm.controls.subject.touched)"
+                id="subject"
+                formControlName="subject"
+              >
+                <option value="" disabled selected>Select Subject</option>
+                <option value="math">Mathematics & Physics</option>
+                <option value="cs">Computer Science & AI</option>
+                <option value="business">Business & Economics</option>
+                <option value="humanities">Humanities & Social Sciences</option>
+                <option value="arts">Creative Arts & Design</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+            </div>
+          </div>
+
+          <!-- Experience -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="experience">Years of Experience</label>
+              @if (registerForm.controls.experience.invalid && registerForm.controls.experience.touched) {
+                <span class="text-error text-label-sm">Min 0</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">school</span>
+              <input
+                class="w-full pl-10 pr-4 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.experience.invalid && registerForm.controls.experience.touched"
+                [class.border-outline-variant]="!(registerForm.controls.experience.invalid && registerForm.controls.experience.touched)"
+                id="experience"
+                formControlName="experience"
+                min="0"
+                placeholder="5"
+                type="number"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Password -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+              @if (registerForm.controls.password.invalid && registerForm.controls.password.touched) {
+                <span class="text-error text-label-sm">Min 6 chars</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+              <input
+                class="w-full pl-10 pr-4 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.password.invalid && registerForm.controls.password.touched"
+                [class.border-outline-variant]="!(registerForm.controls.password.invalid && registerForm.controls.password.touched)"
+                id="password"
+                formControlName="password"
+                placeholder="••••••••"
+                type="password"
+              />
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-md text-on-surface-variant" for="confirmPassword">Confirm Password</label>
+              @if (registerForm.controls.confirmPassword.touched && registerForm.hasError('passwordMismatch')) {
+                <span class="text-error text-label-sm">Passwords do not match</span>
+              }
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">verified_user</span>
+              <input
+                class="w-full pl-10 pr-4 py-3 rounded-lg border bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                [class.border-error]="registerForm.controls.confirmPassword.touched && (registerForm.controls.confirmPassword.invalid || registerForm.hasError('passwordMismatch'))"
+                [class.border-outline-variant]="!(registerForm.controls.confirmPassword.touched && (registerForm.controls.confirmPassword.invalid || registerForm.hasError('passwordMismatch')))"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="••••••••"
+                type="password"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-2">
+          <input
+            class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5 animate-none"
+            id="terms"
+            formControlName="terms"
+            type="checkbox"
+          />
+          <label class="font-body-sm text-body-sm text-on-surface-variant" for="terms">
+            I agree to the <a class="text-primary font-medium underline" href="#">Terms of Service</a> and <a class="text-primary font-medium underline" href="#">Privacy Policy</a>.
+          </label>
+        </div>
+
+        <button
+          class="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-headline-md shadow-lg shadow-primary/20 hover:opacity-90 hover:-translate-y-0.5 transition-all active:scale-95 mt-4 flex items-center justify-center gap-2"
+          [disabled]="isLoading() || isSuccess()"
+          type="submit"
+        >
+          @if (isLoading()) {
+            <span class="material-symbols-outlined animate-spin" style="font-size: 20px;">progress_activity</span>
+            <span>Creating Account...</span>
+          } @else if (isSuccess()) {
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>Welcome Aboard!</span>
+          } @else {
+            <span>Register as Instructor</span>
+          }
+        </button>
+
+        <p class="text-center font-body-md text-body-md text-on-surface-variant mt-4">
+          Already have an account? <a class="text-primary font-bold hover:underline" routerLink="/login">Log In</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface border-t border-outline-variant dark:border-outline w-full py-8 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+  <div class="flex flex-col gap-2">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary" style="font-size: 20px;">school</span>
+      <span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">EduFlow</span>
+    </div>
+    <p class="font-body-sm text-body-sm text-on-secondary-container dark:text-secondary-fixed-dim">© 2024 EduFlow. Empowering the next generation of learners.</p>
+  </div>
+  <div class="flex flex-wrap justify-center gap-6">
+    <a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" routerLink="/login">Log In</a>
+    <a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" routerLink="/register/student">Register as Student</a>
+    <a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Privacy Policy</a>
+    <a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Help Center</a>
+  </div>
+</footer>

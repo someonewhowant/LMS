@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Instructor Registration | EduFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f8f9ff",
+                    "outline-variant": "#c7c4d8",
+                    "outline": "#777587",
+                    "primary-container": "#4f46e5",
+                    "primary": "#3525cd",
+                    "surface-variant": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#dae2fd",
+                    "inverse-primary": "#c3c0ff",
+                    "surface-container-high": "#dce9ff",
+                    "tertiary-fixed": "#6ffbbe",
+                    "on-tertiary-container": "#67f4b7",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-dim": "#cbdbf5",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary-container": "#5c647a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f8f9ff",
+                    "primary-fixed": "#e2dfff",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#4d44e3",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "on-background": "#0b1c30",
+                    "surface-container": "#e5eeff",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#464555",
+                    "background": "#f8f9ff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#0f0069",
+                    "on-surface": "#0b1c30",
+                    "tertiary": "#005338",
+                    "secondary-container": "#dae2fd",
+                    "on-secondary-fixed": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "secondary": "#565e74",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "tertiary-container": "#006e4b",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "on-primary-container": "#dad7ff",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary-fixed": "#002113"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "container-max": "1280px",
+                    "margin-desktop": "40px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #3525cd;
+            box-shadow: 0 0 0 2px rgba(53, 37, 205, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm dark:shadow-none docked full-width top-0 z-50">
+<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-inverse-primary" style="font-size: 28px;">school</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">EduFlow</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors px-3 py-1 rounded-lg" href="#">Courses</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors px-3 py-1 rounded-lg" href="#">Mentors</a>
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary px-3 py-1" href="#">Become a Teacher</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Log In</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all active:scale-95">Sign Up</button>
+</div>
+</nav>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center py-12 px-margin-mobile">
+<div class="max-w-container-max w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Hero / Left Section -->
+<div class="lg:col-span-5 space-y-6">
+<div class="space-y-4">
+<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                        Instructor Program
+                    </span>
+<h1 class="font-headline-xl text-headline-xl text-on-background">Join as an Instructor</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">Empower students and share your knowledge. Join a global community of educators dedicated to academic excellence and modern skill-building.</p>
+</div>
+<div class="grid grid-cols-1 gap-4 pt-4">
+<div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">groups</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Global Reach</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Connect with thousands of students worldwide.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">insights</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Growth Tools</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Advanced analytics to track student progress.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Registration Form Card -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-8 md:p-10 rounded-xl shadow-[0px_4px_12px_rgba(79,70,229,0.1)] border border-outline-variant/20">
+<form class="space-y-6" id="registrationForm">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Full Name -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="fullName">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface form-input-focus transition-all" id="fullName" placeholder="Dr. Jane Doe" required="" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface form-input-focus transition-all" id="email" placeholder="jane.doe@university.edu" required="" type="email"/>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Specialization -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="subject">Specialization/Subject Area</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">book</span>
+<select class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface appearance-none form-input-focus transition-all" id="subject">
+<option disabled="" selected="" value="">Select Subject</option>
+<option value="math">Mathematics &amp; Physics</option>
+<option value="cs">Computer Science &amp; AI</option>
+<option value="business">Business &amp; Economics</option>
+<option value="humanities">Humanities &amp; Social Sciences</option>
+<option value="arts">Creative Arts &amp; Design</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Experience -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="experience">Years of Experience</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">school</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface form-input-focus transition-all" id="experience" min="0" placeholder="5" required="" type="number"/>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Password -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface form-input-focus transition-all" id="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="confirmPassword">Confirm Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">verified_user</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface form-input-focus transition-all" id="confirmPassword" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 pt-2">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" id="terms" required="" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant" for="terms">I agree to the <a class="text-primary font-medium underline" href="#">Terms of Service</a> and <a class="text-primary font-medium underline" href="#">Privacy Policy</a>.</label>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-headline-md text-headline-md shadow-lg shadow-primary/20 hover:opacity-90 hover:-translate-y-0.5 transition-all active:scale-95 mt-4" type="submit">
+                        Register as Instructor
+                    </button>
+<p class="text-center font-body-md text-body-md text-on-surface-variant mt-4">
+                        Already have an account? <a class="text-primary font-bold hover:underline" href="#">Log In</a>
+</p>
+</form>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface border-t border-outline-variant dark:border-outline w-full py-8 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 20px;">school</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">EduFlow</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-secondary-container dark:text-secondary-fixed-dim">© 2024 EduFlow. Empowering the next generation of learners.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Log In</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Register as Student</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-secondary-container dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-inverse-primary underline transition-all" href="#">Help Center</a>
+</div>
+</footer>
+<script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            
+            // Micro-interaction: Loading State
+            btn.innerHTML = '<span class="flex items-center justify-center gap-3"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating Account...</span>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<span class="flex items-center justify-center gap-2"><span class="material-symbols-outlined">check_circle</span> Welcome Aboard!</span>';
+                btn.classList.replace('bg-primary', 'bg-tertiary-container');
+                btn.classList.add('text-white');
+                
+                // Show success visual feedback
+                const inputs = e.target.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.classList.add('border-tertiary');
+                    input.disabled = true;
+                });
+
+                console.log("Registration Successful - Transitioning to onboarding...");
+            }, 1800);
+        });
+
+        // Floating Effect for the form card
+        const formCard = document.querySelector('.lg\\:col-span-7');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
+            formCard.style.transform = `translate(${xAxis}px, ${yAxis}px)`;
+        });
+    </script>
+</body></html>

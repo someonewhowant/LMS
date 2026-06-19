@@ -1,0 +1,144 @@
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-surface flex items-center justify-between px-margin-mobile py-4 transition-all duration-200">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary">school</span>
+    <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">EduFlow</h1>
+  </div>
+  <div class="flex items-center">
+    <button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95">help_outline</button>
+  </div>
+</header>
+
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile py-10 max-w-[480px] mx-auto w-full">
+  <!-- Visual Accent -->
+  <div class="mb-8 relative w-full aspect-video rounded-xl overflow-hidden ambient-shadow">
+    <img class="w-full h-full object-cover" alt="Clean digital classroom illustration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb7yVH8YcREwV6JW3J1MU6jLKA-OZViQfkc1kez2Td3Ennz8VxfFwrGMOJ7305W2AuIFUzs1Qbh-kylVUSm29L9wU03hoLoGMIG2_PN53SX1j613NpgvCOsgzO9yCprrLMXBWfNxVBIkUqw88wLY3KOxDS_N81oHGIWcHuH5rOFYnAKvea4MxuDQUFw7Fh4lAlyUN5B1dG1h6SEkyGByLJEh1nyijTbx71916W1xYve7nFL1zVPYIUIKjy8mM7lWlYs4PEXzvgny8_"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+  </div>
+
+  <!-- Login Form Container -->
+  <div class="w-full bg-surface-container-lowest p-gutter rounded-xl ambient-shadow border border-outline-variant/30">
+    <div class="mb-6">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Welcome Back</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Please enter your credentials to continue your journey.</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-4 p-3 rounded bg-error-container text-on-error-container text-body-sm flex items-center gap-2 border border-error/20">
+        <span class="material-symbols-outlined text-error" style="font-size: 20px;">error</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form class="space-y-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Input -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-label-md text-on-surface-variant" for="email">Email</label>
+          @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+            <span class="text-error text-label-sm">Enter a valid email</span>
+          }
+        </div>
+        <div class="relative focus-glow rounded-lg">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">mail</span>
+          <input
+            class="w-full pl-10 pr-4 py-3 bg-white border rounded-lg font-body-md text-body-md focus:border-primary focus:ring-0 transition-colors placeholder:text-outline/50"
+            [class.border-error]="loginForm.controls.email.invalid && loginForm.controls.email.touched"
+            [class.border-outline-variant]="!(loginForm.controls.email.invalid && loginForm.controls.email.touched)"
+            id="email"
+            formControlName="email"
+            placeholder="e.g. student@eduflow.com"
+            type="email"
+          />
+        </div>
+      </div>
+
+      <!-- Password Input -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label class="font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+          @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+            <span class="text-error text-label-sm">Password is too short (min 6 characters)</span>
+          }
+        </div>
+        <div class="relative focus-glow rounded-lg">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock</span>
+          <input
+            class="w-full pl-10 pr-12 py-3 bg-white border rounded-lg font-body-md text-body-md focus:border-primary focus:ring-0 transition-colors placeholder:text-outline/50"
+            [class.border-error]="loginForm.controls.password.invalid && loginForm.controls.password.touched"
+            [class.border-outline-variant]="!(loginForm.controls.password.invalid && loginForm.controls.password.touched)"
+            id="password"
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••"
+          />
+          <button
+            class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline hover:text-primary transition-colors"
+            (click)="togglePasswordVisibility()"
+            type="button"
+          >
+            {{ showPassword() ? 'visibility_off' : 'visibility' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Remember & Forgot -->
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-2 cursor-pointer group">
+          <input
+            class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0"
+            formControlName="rememberMe"
+            type="checkbox"
+          />
+          <span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember Me</span>
+        </label>
+        <a class="font-label-md text-label-md text-primary hover:underline transition-all active:scale-95" href="#">Forgot Password?</a>
+      </div>
+
+      <!-- Sign In Button -->
+      <button
+        class="w-full py-3.5 bg-primary-container text-on-primary-container font-headline-md text-headline-md rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all duration-200 mt-4 flex items-center justify-center gap-2"
+        [disabled]="isLoading()"
+        type="submit"
+      >
+        @if (isLoading()) {
+          <span class="material-symbols-outlined animate-spin" style="font-size: 20px;">progress_activity</span>
+          <span>Signing In...</span>
+        } @else {
+          <span>Sign In</span>
+        }
+      </button>
+    </form>
+
+    <div class="relative my-8">
+      <div class="absolute inset-0 flex items-center">
+        <span class="w-full border-t border-outline-variant"></span>
+      </div>
+      <div class="relative flex justify-center text-label-sm">
+        <span class="px-2 bg-surface-container-lowest text-outline italic">Trusted by 10k+ Institutions</span>
+      </div>
+    </div>
+
+    <!-- SSO Options -->
+    <div class="grid grid-cols-2 gap-3">
+      <button class="flex items-center justify-center gap-2 py-2.5 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors active:scale-95">
+        <img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwIGUhVSrDL50GlhSwgCO34NNlh8eO7QjbPxtOxyCz5oIm_Ra2dHGhpbYbIkuiy-_ujhuBu6FYp5wdR3VX-S4IA6xRgF1kzsx0Qx3dEdSRTmSJZV1gWkhJejWrUZQ3PvM-FhWvJwm5eMjoa73yX1iKTh961pxBOhbsHzsbpnumFRNblb2fu9gHDeZDYUDr6Mw_-ywsZkxAXJiurYMDrcMt_c3olHkxBWigv6QCMtfZ3J7nSQljyno7WZaadpu-72BI6AJFplqfvJl-"/>
+        <span class="font-label-md text-label-md">Google</span>
+      </button>
+      <button class="flex items-center justify-center gap-2 py-2.5 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 1;">terminal</span>
+        <span class="font-label-md text-label-md">SSO</span>
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full pb-8 flex flex-col items-center gap-4 px-margin-mobile mt-auto bg-transparent">
+  <div class="flex gap-6">
+    <a class="font-label-md text-label-md text-secondary hover:text-primary-container transition-colors active:scale-95" routerLink="/register/student">Register as Student</a>
+    <div class="w-px h-4 bg-outline-variant"></div>
+    <a class="font-label-md text-label-md text-secondary hover:text-primary-container transition-colors active:scale-95" routerLink="/register/teacher">Register as Teacher</a>
+  </div>
+  <p class="font-label-md text-label-md text-primary font-bold">© 2024 EduFlow LMS</p>
+</footer>
