@@ -1,0 +1,117 @@
+<header
+  class="w-full sticky top-0 z-50 transition-all duration-300"
+  [class]="transparent() ? 'bg-transparent' : 'bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/60'"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-18">
+
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center space-x-2.5 group">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-shadow duration-300">
+          <span class="font-extrabold text-lg text-white tracking-wider">E</span>
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">EduFlow</span>
+          <span class="hidden sm:inline text-[10px] text-slate-500 ml-1.5 font-medium uppercase tracking-widest">Academy</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-1">
+        <a routerLink="/" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">Главная</a>
+        <a routerLink="/courses" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">Каталог курсов</a>
+        <a routerLink="/blog" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">Блог</a>
+        <a class="px-3.5 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 cursor-default">О платформе</a>
+      </nav>
+
+      <!-- Right side -->
+      <div class="flex items-center space-x-3">
+        @if (authService.isAuthenticated()) {
+          <!-- Authenticated state -->
+          <a [routerLink]="getDashboardRoute()" class="hidden sm:inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium text-slate-300 hover:text-white border border-slate-700/60 hover:border-slate-600 rounded-xl transition-all duration-200 hover:bg-white/5">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            </svg>
+            <span>Кабинет</span>
+          </a>
+
+          <div class="hidden sm:flex items-center space-x-2">
+            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
+              {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
+            </div>
+            <button (click)="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition-colors rounded-lg hover:bg-rose-950/30" title="Выйти">
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        } @else {
+          <!-- Guest state -->
+          <a routerLink="/login" class="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-slate-300 hover:text-white border border-slate-700/60 hover:border-slate-600 rounded-xl transition-all duration-200 hover:bg-white/5">
+            Войти
+          </a>
+          <a routerLink="/register/student" class="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 active:scale-[0.97]">
+            Регистрация
+          </a>
+        }
+
+        <!-- Mobile hamburger -->
+        <button (click)="toggleMobileMenu()" class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            @if (mobileMenuOpen()) {
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            } @else {
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            }
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  @if (mobileMenuOpen()) {
+    <div class="lg:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/60 animate-slide-down">
+      <div class="px-4 py-4 space-y-1">
+        <a routerLink="/" (click)="mobileMenuOpen.set(false)" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">
+          <svg class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+          <span>Главная</span>
+        </a>
+        <a routerLink="/courses" (click)="mobileMenuOpen.set(false)" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">
+          <svg class="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+          <span>Каталог курсов</span>
+        </a>
+        <a routerLink="/blog" (click)="mobileMenuOpen.set(false)" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">
+          <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
+          <span>Блог</span>
+        </a>
+      </div>
+      <div class="px-4 py-4 border-t border-slate-800/60 space-y-2">
+        @if (authService.isAuthenticated()) {
+          <div class="flex items-center space-x-3 px-3 py-2">
+            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
+              {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-white">{{ authService.currentUser()?.fullName }}</p>
+              <p class="text-xs text-slate-400 capitalize">{{ authService.currentUser()?.role }}</p>
+            </div>
+          </div>
+          <a [routerLink]="getDashboardRoute()" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl transition-all">
+            Личный кабинет
+          </a>
+          <button (click)="logout(); mobileMenuOpen.set(false)" class="w-full px-4 py-2.5 text-sm font-medium text-rose-400 border border-rose-800/40 hover:bg-rose-950/30 rounded-xl transition-all">
+            Выйти
+          </button>
+        } @else {
+          <a routerLink="/login" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-medium text-slate-300 border border-slate-700/60 rounded-xl hover:bg-white/5 transition-all">
+            Войти
+          </a>
+          <a routerLink="/register/student" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl transition-all">
+            Регистрация
+          </a>
+        }
+      </div>
+    </div>
+  }
+</header>

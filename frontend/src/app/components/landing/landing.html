@@ -1,0 +1,335 @@
+<div class="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
+
+  <!-- Header -->
+  <app-header [transparent]="true" />
+
+  <!-- ============================== -->
+  <!-- HERO SECTION                   -->
+  <!-- ============================== -->
+  <section class="relative overflow-hidden">
+    <!-- Background glow effects -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[120px]"></div>
+      <div class="absolute bottom-[-30%] right-[-5%] w-[400px] h-[400px] rounded-full bg-violet-600/10 blur-[100px]"></div>
+      <div class="absolute top-[40%] right-[20%] w-[200px] h-[200px] rounded-full bg-emerald-500/5 blur-[80px]"></div>
+    </div>
+    <!-- Grid pattern overlay -->
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></svg>');"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 lg:pt-24 lg:pb-28">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+        <!-- Left: Text content -->
+        <div class="space-y-8">
+          <!-- Badge -->
+          <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-indigo-950/60 border border-indigo-800/40 rounded-full">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-semibold text-indigo-300 tracking-wide">Открыт набор на новые курсы</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
+            <span class="text-white">Обучение</span><br/>
+            <span class="bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">нового поколения</span>
+          </h1>
+
+          <p class="text-lg sm:text-xl text-slate-400 leading-relaxed max-w-lg">
+            Интерактивные курсы, практические задания в песочнице кода и система аналитики прогресса — всё для эффективного дистанционного обучения.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row items-start gap-3">
+            <a routerLink="/register/student" class="inline-flex items-center px-6 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl transition-all duration-300 shadow-xl shadow-indigo-600/25 hover:shadow-indigo-500/40 active:scale-[0.97] group">
+              Начать обучение
+              <svg class="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
+            <a routerLink="/register/teacher" class="inline-flex items-center px-6 py-3.5 text-base font-medium text-slate-300 border border-slate-700/60 hover:border-slate-600 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
+              Я преподаватель
+            </a>
+          </div>
+
+          <!-- Social proof -->
+          <div class="flex items-center space-x-4 pt-2">
+            <div class="flex -space-x-2">
+              <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 border-2 border-slate-950 flex items-center justify-center text-xs font-bold text-white">А</div>
+              <div class="h-8 w-8 rounded-full bg-gradient-to-br from-violet-500 to-rose-500 border-2 border-slate-950 flex items-center justify-center text-xs font-bold text-white">М</div>
+              <div class="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 border-2 border-slate-950 flex items-center justify-center text-xs font-bold text-white">Д</div>
+              <div class="h-8 w-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 border-2 border-slate-950 flex items-center justify-center text-xs font-bold text-white">К</div>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-200">1,200+ студентов</p>
+              <p class="text-xs text-slate-500">уже проходят обучение</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Visual card -->
+        <div class="relative hidden lg:block">
+          <!-- Floating dashboard preview -->
+          <div class="relative rounded-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-800/60 p-6 shadow-2xl shadow-indigo-900/10">
+            <!-- Mini header -->
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center space-x-2">
+                <div class="h-3 w-3 rounded-full bg-rose-500/80"></div>
+                <div class="h-3 w-3 rounded-full bg-amber-500/80"></div>
+                <div class="h-3 w-3 rounded-full bg-emerald-500/80"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 font-mono">eduflow.academy/dashboard</span>
+            </div>
+
+            <!-- Mock course cards -->
+            <div class="space-y-3">
+              <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/40 flex items-center space-x-4">
+                <div class="h-10 w-10 rounded-lg bg-indigo-600/20 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-indigo-400" style="font-size:20px">code</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-slate-200 truncate">Основы JavaScript</p>
+                  <div class="mt-1.5 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full w-[72%] bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full"></div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-indigo-400 shrink-0">72%</span>
+              </div>
+
+              <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/40 flex items-center space-x-4">
+                <div class="h-10 w-10 rounded-lg bg-violet-600/20 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-violet-400" style="font-size:20px">database</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-slate-200 truncate">SQL и базы данных</p>
+                  <div class="mt-1.5 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full w-[45%] bg-gradient-to-r from-violet-500 to-rose-500 rounded-full"></div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-violet-400 shrink-0">45%</span>
+              </div>
+
+              <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/40 flex items-center space-x-4">
+                <div class="h-10 w-10 rounded-lg bg-emerald-600/20 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-emerald-400" style="font-size:20px">web</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-slate-200 truncate">Angular Framework</p>
+                  <div class="mt-1.5 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full w-[18%] bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"></div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-emerald-400 shrink-0">18%</span>
+              </div>
+            </div>
+
+            <!-- Mock bottom stats -->
+            <div class="mt-5 grid grid-cols-3 gap-3">
+              <div class="p-3 bg-slate-800/30 rounded-lg text-center border border-slate-700/30">
+                <p class="text-lg font-bold text-white">12</p>
+                <p class="text-[10px] text-slate-500">Модулей</p>
+              </div>
+              <div class="p-3 bg-slate-800/30 rounded-lg text-center border border-slate-700/30">
+                <p class="text-lg font-bold text-emerald-400">8</p>
+                <p class="text-[10px] text-slate-500">Тестов</p>
+              </div>
+              <div class="p-3 bg-slate-800/30 rounded-lg text-center border border-slate-700/30">
+                <p class="text-lg font-bold text-violet-400">95%</p>
+                <p class="text-[10px] text-slate-500">Средний балл</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badge -->
+          <div class="absolute -top-3 -right-3 px-3 py-1.5 bg-emerald-600/90 backdrop-blur-sm rounded-full text-xs font-bold text-white shadow-lg animate-bounce-slow">
+            🎓 Новый курс
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- STATS SECTION                  -->
+  <!-- ============================== -->
+  <section class="relative border-y border-slate-800/60 bg-slate-900/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+        @for (stat of stats; track stat.label) {
+          <div class="text-center space-y-2 group">
+            <span class="material-symbols-outlined text-indigo-400/60 group-hover:text-indigo-400 transition-colors" style="font-size:28px">{{ stat.icon }}</span>
+            <p class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{{ stat.value }}</p>
+            <p class="text-sm text-slate-400">{{ stat.label }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- FEATURES SECTION               -->
+  <!-- ============================== -->
+  <section class="relative py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="inline-block px-3 py-1 text-xs font-semibold text-indigo-400 bg-indigo-950/60 border border-indigo-800/30 rounded-full mb-4 uppercase tracking-wider">Возможности</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+          Всё для эффективного обучения
+        </h2>
+        <p class="text-base text-slate-400 leading-relaxed">
+          Платформа объединяет лучшие инструменты для создания, прохождения и управления учебными курсами.
+        </p>
+      </div>
+
+      <!-- Features grid -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        @for (feature of features; track feature.title) {
+          <div class="group p-6 rounded-2xl bg-slate-900/50 border hover:bg-slate-900/80 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-900/5 hover:-translate-y-0.5"
+               [class]="getFeatureBorderColor(feature.color)">
+            <div class="h-11 w-11 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4"
+                 [class]="getFeatureGradient(feature.color)">
+              <span class="material-symbols-outlined" [class]="getFeatureIconColor(feature.color)" style="font-size:22px">{{ feature.icon }}</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{{ feature.title }}</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">{{ feature.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- COURSES PREVIEW SECTION        -->
+  <!-- ============================== -->
+  <section class="relative py-16 lg:py-24 bg-slate-900/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
+        <div>
+          <span class="inline-block px-3 py-1 text-xs font-semibold text-violet-400 bg-violet-950/60 border border-violet-800/30 rounded-full mb-4 uppercase tracking-wider">Каталог</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Популярные курсы</h2>
+        </div>
+        <a routerLink="/courses" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center space-x-1 group">
+          <span>Все курсы</span>
+          <svg class="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+        </a>
+      </div>
+
+      <!-- Course cards -->
+      @if (isLoadingCourses()) {
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (i of [1,2,3]; track i) {
+            <div class="rounded-2xl bg-slate-900/50 border border-slate-800/40 p-6 animate-pulse">
+              <div class="h-4 bg-slate-800 rounded w-3/4 mb-4"></div>
+              <div class="h-3 bg-slate-800/60 rounded w-full mb-2"></div>
+              <div class="h-3 bg-slate-800/60 rounded w-2/3 mb-6"></div>
+              <div class="h-8 bg-slate-800/40 rounded-lg"></div>
+            </div>
+          }
+        </div>
+      } @else if (courses().length > 0) {
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (course of courses(); track course.id; let i = $index) {
+            <div class="group rounded-2xl bg-slate-900/50 border border-slate-800/40 hover:border-indigo-800/40 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-900/10 hover:-translate-y-0.5 flex flex-col">
+              <!-- Course icon -->
+              <div class="h-12 w-12 rounded-xl flex items-center justify-center mb-4"
+                   [class]="i === 0 ? 'bg-indigo-600/15' : i === 1 ? 'bg-violet-600/15' : 'bg-emerald-600/15'">
+                <span class="material-symbols-outlined" style="font-size:24px"
+                      [class]="i === 0 ? 'text-indigo-400' : i === 1 ? 'text-violet-400' : 'text-emerald-400'">
+                  {{ i === 0 ? 'code' : i === 1 ? 'terminal' : 'web' }}
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{{ course.title }}</h3>
+              <p class="text-sm text-slate-400 leading-relaxed mb-4 flex-1">{{ course.description || 'Курс для изучения на платформе EduFlow Academy' }}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-slate-500">{{ course.modules?.length || 0 }} модулей</span>
+                <a routerLink="/login" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+                  Подробнее →
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="text-center py-12">
+          <span class="material-symbols-outlined text-slate-600 mb-4" style="font-size:48px">school</span>
+          <p class="text-lg font-semibold text-slate-400">Курсы скоро появятся</p>
+          <p class="text-sm text-slate-500 mt-1">Мы активно работаем над созданием учебных программ.</p>
+        </div>
+      }
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- TESTIMONIALS SECTION           -->
+  <!-- ============================== -->
+  <section class="relative py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="inline-block px-3 py-1 text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800/30 rounded-full mb-4 uppercase tracking-wider">Отзывы</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+          Что говорят наши пользователи
+        </h2>
+      </div>
+
+      <!-- Testimonial cards -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (t of testimonials; track t.name; let i = $index) {
+          <div class="p-6 rounded-2xl bg-slate-900/50 border border-slate-800/40 hover:border-slate-700/60 transition-all duration-300">
+            <!-- Quote icon -->
+            <svg class="h-6 w-6 text-indigo-500/40 mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/></svg>
+            <p class="text-sm text-slate-300 leading-relaxed mb-5 italic">«{{ t.text }}»</p>
+            <div class="flex items-center space-x-3">
+              <div class="h-9 w-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
+                   [class]="i === 0 ? 'bg-gradient-to-br from-indigo-500 to-violet-500' : i === 1 ? 'bg-gradient-to-br from-violet-500 to-rose-500' : 'bg-gradient-to-br from-emerald-500 to-cyan-500'">
+                {{ t.avatar }}
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-white">{{ t.name }}</p>
+                <p class="text-xs text-slate-500">{{ t.role }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- CTA SECTION                    -->
+  <!-- ============================== -->
+  <section class="relative py-16 lg:py-24 overflow-hidden">
+    <!-- Background effects -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-600/8 blur-[120px]"></div>
+    </div>
+
+    <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-5">
+        Готовы начать обучение?
+      </h2>
+      <p class="text-base sm:text-lg text-slate-400 leading-relaxed mb-8 max-w-xl mx-auto">
+        Присоединяйтесь к растущему сообществу студентов и преподавателей. Регистрация бесплатна.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a routerLink="/register/student" class="inline-flex items-center px-8 py-4 text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl transition-all duration-300 shadow-xl shadow-indigo-600/25 hover:shadow-indigo-500/40 active:scale-[0.97] group">
+          Зарегистрироваться
+          <svg class="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+        </a>
+        <a routerLink="/login" class="inline-flex items-center px-8 py-4 text-base font-medium text-slate-300 border border-slate-700/60 hover:border-slate-600 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
+          Уже есть аккаунт? Войти
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <app-footer />
+
+</div>

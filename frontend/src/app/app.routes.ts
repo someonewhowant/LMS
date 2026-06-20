@@ -3,6 +3,10 @@ import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () => import('./components/landing/landing').then((m) => m.LandingComponent)
+  },
+  {
     path: 'login',
     loadComponent: () => import('./components/login/login').then((m) => m.LoginComponent)
   },
@@ -55,12 +59,7 @@ export const routes: Routes = [
     canActivate: [roleGuard(['student', 'teacher', 'admin'])]
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
-  },
-  {
     path: '**',
-    redirectTo: 'login'
+    redirectTo: ''
   }
 ];
