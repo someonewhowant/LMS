@@ -45,6 +45,16 @@ export const routes: Routes = [
     canActivate: [roleGuard(['admin', 'teacher'])]
   },
   {
+    path: 'blog',
+    loadComponent: () => import('./components/blog-list/blog-list').then((m) => m.BlogListComponent),
+    canActivate: [roleGuard(['student', 'teacher', 'admin'])]
+  },
+  {
+    path: 'blog/post/:idOrSlug',
+    loadComponent: () => import('./components/post-detail/post-detail').then((m) => m.PostDetailComponent),
+    canActivate: [roleGuard(['student', 'teacher', 'admin'])]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

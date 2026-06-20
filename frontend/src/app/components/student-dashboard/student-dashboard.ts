@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CourseService, Course } from '../../services/course.service';
 import { ProgressService } from '../../services/progress.service';
+import { BookmarkService } from '../../services/bookmark.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -14,10 +15,12 @@ export class StudentDashboardComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly courseService = inject(CourseService);
   private readonly progressService = inject(ProgressService);
+  private readonly bookmarkService = inject(BookmarkService);
   private readonly router = inject(Router);
 
   // Signal states
   readonly courses = signal<Course[]>([]);
+  readonly bookmarks = signal<any[]>([]);
   readonly isLoading = signal<boolean>(true);
   readonly lastOpenedCourse = signal<number | null>(null);
   readonly lastOpenedModule = signal<number | null>(null);
@@ -31,6 +34,7 @@ export class StudentDashboardComponent implements OnInit {
     }
 
     this.loadCourses();
+    this.loadBookmarks();
   }
 
   loadCourses(): void {
@@ -53,6 +57,13 @@ export class StudentDashboardComponent implements OnInit {
     if (courseId && moduleId) {
       this.router.navigate(['/student/course', courseId, 'module', moduleId]);
     }
+  }
+
+  loadBookmarks(): void {
+    this.bookmarkService.getBookmarks().subscribe({
+      next: (data) => this.bookmarks.set(data),
+      error: (err) => console.error('Error fetching bookmarks', err)
+    });
   }
 
   logout(): void {

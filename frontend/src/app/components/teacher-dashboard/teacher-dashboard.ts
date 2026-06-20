@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@ang
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CourseService, Course, CourseModule } from '../../services/course.service';
+import { BookmarkService } from '../../services/bookmark.service';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -12,10 +13,12 @@ import { CourseService, Course, CourseModule } from '../../services/course.servi
 export class TeacherDashboardComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly courseService = inject(CourseService);
+  private readonly bookmarkService = inject(BookmarkService);
   private readonly router = inject(Router);
 
   // States
   readonly courses = signal<Course[]>([]);
+  readonly bookmarks = signal<any[]>([]);
   readonly isLoading = signal<boolean>(true);
   readonly selectedCourse = signal<Course | null>(null);
 
@@ -38,6 +41,7 @@ export class TeacherDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCourses();
+    this.loadBookmarks();
   }
 
   loadCourses(): void {
@@ -168,6 +172,13 @@ export class TeacherDashboardComponent implements OnInit {
         console.error(err);
         this.responseMessage.set('Не удалось удалить модуль.');
       }
+    });
+  }
+
+  loadBookmarks(): void {
+    this.bookmarkService.getBookmarks().subscribe({
+      next: (data) => this.bookmarks.set(data),
+      error: (err) => console.error('Error fetching bookmarks', err)
     });
   }
 

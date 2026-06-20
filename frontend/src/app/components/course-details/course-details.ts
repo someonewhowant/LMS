@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CourseService, Course } from '../../services/course.service';
 import { ProgressService, CourseProgress } from '../../services/progress.service';
 import { AuthService } from '../../services/auth.service';
+import { BookmarkService } from '../../services/bookmark.service';
 
 @Component({
   selector: 'app-course-details',
@@ -15,11 +16,13 @@ export class CourseDetailsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly courseService = inject(CourseService);
   private readonly progressService = inject(ProgressService);
+  private readonly bookmarkService = inject(BookmarkService);
   readonly authService = inject(AuthService);
 
   readonly courseId = signal<number>(0);
   readonly course = signal<Course | null>(null);
   readonly progress = signal<CourseProgress | null>(null);
+  readonly isBookmarked = signal<boolean>(false);
   readonly isLoading = signal<boolean>(true);
   readonly errorMessage = signal<string | null>(null);
 
@@ -29,6 +32,7 @@ export class CourseDetailsComponent implements OnInit {
       const id = parseInt(idParam, 10);
       this.courseId.set(id);
       this.loadCourseAndProgress(id);
+      this.checkBookmarkStatus(id);
     } else {
       this.errorMessage.set('Неверный ID курса');
       this.isLoading.set(false);
@@ -66,6 +70,18 @@ export class CourseDetailsComponent implements OnInit {
   isModuleCompleted(moduleId: number): boolean {
     const p = this.progress();
     return p ? p.completedModuleIds.includes(moduleId) : false;
+  }
+
+  checkBookmarkStatus(id: number): void {
+    this.bookmarkService.checkBookmark('course', id).subscribe({
+      next: (res) => this.isBookmarked.set(res.bookmarked)
+    });
+  }
+
+  toggleBookmark(): void {
+    this.bookmarkService.toggleBookmark('course', this.courseId()).subscribe({
+      next: (res) => this.isBookmarked.set(res.bookmarked)
+    });
   }
 
   logout(): void {
