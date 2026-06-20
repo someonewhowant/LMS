@@ -46,7 +46,9 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading.set(false);
         // Navigate based on role or to home dashboard
-        if (response.user.role === 'teacher') {
+        if (response.user.role === 'admin') {
+          this.router.navigate(['/admin/dashboard']);
+        } else if (response.user.role === 'teacher') {
           this.router.navigate(['/teacher/dashboard']);
         } else {
           this.router.navigate(['/student/dashboard']);
@@ -59,18 +61,28 @@ export class LoginComponent {
         } else {
           // Fallback simulation for easy prototype testing
           console.warn('Backend not responding, simulating successful login for prototyping', err);
+          
+          let role: 'student' | 'teacher' | 'admin' = 'student';
+          if (credentials.email.includes('admin')) {
+            role = 'admin';
+          } else if (credentials.email.includes('teacher')) {
+            role = 'teacher';
+          }
+          
           const mockUser: User = {
             id: '1',
             email: credentials.email,
             fullName: credentials.email.split('@')[0],
-            role: credentials.email.includes('teacher') ? 'teacher' : 'student'
+            role: role
           };
           this.authService.currentUser.set(mockUser);
           this.authService.isAuthenticated.set(true);
           localStorage.setItem('token', 'mock-jwt-token');
           localStorage.setItem('user', JSON.stringify(mockUser));
           
-          if (mockUser.role === 'teacher') {
+          if (role === 'admin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else if (role === 'teacher') {
             this.router.navigate(['/teacher/dashboard']);
           } else {
             this.router.navigate(['/student/dashboard']);
