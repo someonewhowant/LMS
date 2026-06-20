@@ -2,12 +2,10 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@ang
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../header/header';
-import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-profile-settings',
-  imports: [ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './profile-settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

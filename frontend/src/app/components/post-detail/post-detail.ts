@@ -5,7 +5,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BlogService, Post, Comment } from '../../services/blog.service';
 import { BookmarkService } from '../../services/bookmark.service';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-post-detail',
   standalone: true,

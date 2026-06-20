@@ -2,12 +2,10 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../header/header';
-import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-register-student',
-  imports: [ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register-student.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

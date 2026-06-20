@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-student-coding-sandbox',
   imports: [RouterLink],

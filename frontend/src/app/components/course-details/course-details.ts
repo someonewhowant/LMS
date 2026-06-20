@@ -4,7 +4,6 @@ import { CourseService, Course } from '../../services/course.service';
 import { ProgressService, CourseProgress } from '../../services/progress.service';
 import { AuthService } from '../../services/auth.service';
 import { BookmarkService } from '../../services/bookmark.service';
-
 @Component({
   selector: 'app-course-details',
   imports: [RouterLink],

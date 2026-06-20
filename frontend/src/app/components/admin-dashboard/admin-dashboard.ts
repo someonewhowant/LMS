@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.html',

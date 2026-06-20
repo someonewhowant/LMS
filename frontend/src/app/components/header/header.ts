@@ -15,6 +15,13 @@ export class HeaderComponent {
   /** If true, the header renders a transparent style for use on hero sections */
   readonly transparent = input<boolean>(false);
 
+  constructor() {
+    this.router.events.subscribe(() => {
+      this.closeProfileDropdown();
+      this.mobileMenuOpen.set(false);
+    });
+  }
+
   readonly mobileMenuOpen = signal<boolean>(false);
   readonly profileDropdownOpen = signal<boolean>(false);
 

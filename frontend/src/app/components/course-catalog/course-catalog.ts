@@ -2,12 +2,10 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } 
 import { RouterLink } from '@angular/router';
 import { CourseService, CatalogCourse } from '../../services/course.service';
 import { AuthService } from '../../services/auth.service';
-import { HeaderComponent } from '../header/header';
-import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-course-catalog',
-  imports: [RouterLink, HeaderComponent, FooterComponent],
+  imports: [RouterLink],
   templateUrl: './course-catalog.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

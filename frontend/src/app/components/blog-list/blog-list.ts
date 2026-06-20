@@ -5,7 +5,6 @@ import { Router, RouterModule } from '@angular/router';
 import { BlogService, Post, Category, Tag } from '../../services/blog.service';
 import { BookmarkService, Bookmark } from '../../services/bookmark.service';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-blog-list',
   standalone: true,

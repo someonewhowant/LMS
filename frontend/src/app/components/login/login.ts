@@ -3,12 +3,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/auth.models';
-import { HeaderComponent } from '../header/header';
-import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
