@@ -19,6 +19,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/login/login').then((m) => m.LoginComponent)
   },
   {
+    path: 'settings',
+    loadComponent: () => import('./components/profile-settings/profile-settings').then((m) => m.ProfileSettingsComponent),
+    canActivate: [roleGuard(['student', 'teacher', 'admin'])]
+  },
+  {
     path: 'register/student',
     loadComponent: () => import('./components/register-student/register-student').then((m) => m.RegisterStudentComponent)
   },

@@ -35,15 +35,66 @@
             <span>Кабинет</span>
           </a>
 
-          <div class="hidden sm:flex items-center space-x-2">
-            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
-              {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
-            </div>
-            <button (click)="logout()" class="p-2 text-slate-400 hover:text-rose-400 transition-colors rounded-lg hover:bg-rose-950/30" title="Выйти">
-              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          <div class="relative">
+            <button 
+              (click)="toggleProfileDropdown()" 
+              class="flex items-center space-x-2 p-1 hover:bg-slate-900 border border-transparent hover:border-slate-800 rounded-xl transition-all duration-200"
+            >
+              <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
+                {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
+              </div>
+              <svg class="h-3.5 w-3.5 text-slate-400 transition-transform duration-200" [class.rotate-180]="profileDropdownOpen()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
+
+            <!-- Dropdown Menu -->
+            @if (profileDropdownOpen()) {
+              <div class="fixed inset-0 z-40" (click)="closeProfileDropdown()"></div>
+              
+              <div class="absolute right-0 mt-2.5 w-56 rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl z-50 p-1.5 animate-slide-down">
+                <div class="px-3 py-2.5 border-b border-slate-800/80 mb-1">
+                  <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Вход выполнен</p>
+                  <p class="text-xs font-semibold text-white truncate mt-0.5">{{ authService.currentUser()?.fullName }}</p>
+                  <p class="text-[10px] text-slate-400 truncate mt-0.5">{{ authService.currentUser()?.email }}</p>
+                </div>
+
+                <a 
+                  routerLink="/settings" 
+                  (click)="closeProfileDropdown()" 
+                  class="flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                >
+                  <svg class="h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>Настройки профиля</span>
+                </a>
+
+                <a 
+                  [routerLink]="getDashboardRoute()" 
+                  (click)="closeProfileDropdown()" 
+                  class="flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                >
+                  <svg class="h-4 w-4 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                  </svg>
+                  <span>Закладки и кабинет</span>
+                </a>
+
+                <div class="h-px bg-slate-805 my-1"></div>
+
+                <button 
+                  (click)="logout(); closeProfileDropdown()" 
+                  class="w-full flex items-center space-x-2.5 px-3 py-2 text-xs font-medium text-rose-450 hover:text-rose-400 hover:bg-rose-950/20 rounded-xl transition-all text-left"
+                >
+                  <svg class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Выйти из аккаунта</span>
+                </button>
+              </div>
+            }
           </div>
         } @else {
           <!-- Guest state -->
@@ -93,7 +144,7 @@
       <div class="px-4 py-4 border-t border-slate-800/60 space-y-2">
         @if (authService.isAuthenticated()) {
           <div class="flex items-center space-x-3 px-3 py-2">
-            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
+            <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
               {{ authService.currentUser()?.fullName?.charAt(0) || 'U' }}
             </div>
             <div>
@@ -101,10 +152,13 @@
               <p class="text-xs text-slate-400 capitalize">{{ authService.currentUser()?.role }}</p>
             </div>
           </div>
-          <a [routerLink]="getDashboardRoute()" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl transition-all">
-            Личный кабинет
+          <a [routerLink]="getDashboardRoute()" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-slate-900 border border-slate-800 rounded-xl transition-all">
+            Кабинет и закладки
           </a>
-          <button (click)="logout(); mobileMenuOpen.set(false)" class="w-full px-4 py-2.5 text-sm font-medium text-rose-400 border border-rose-800/40 hover:bg-rose-950/30 rounded-xl transition-all">
+          <a routerLink="/settings" (click)="mobileMenuOpen.set(false)" class="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-slate-900 border border-slate-800 rounded-xl transition-all">
+            Настройки профиля
+          </a>
+          <button (click)="logout(); mobileMenuOpen.set(false)" class="w-full px-4 py-2.5 text-sm font-semibold text-rose-450 hover:text-white border border-rose-900/60 rounded-xl hover:bg-rose-950/20 transition-all">
             Выйти
           </button>
         } @else {

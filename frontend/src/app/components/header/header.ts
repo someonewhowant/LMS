@@ -16,9 +16,18 @@ export class HeaderComponent {
   readonly transparent = input<boolean>(false);
 
   readonly mobileMenuOpen = signal<boolean>(false);
+  readonly profileDropdownOpen = signal<boolean>(false);
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen.update(v => !v);
+  }
+
+  toggleProfileDropdown(): void {
+    this.profileDropdownOpen.update(v => !v);
+  }
+
+  closeProfileDropdown(): void {
+    this.profileDropdownOpen.set(false);
   }
 
   getDashboardRoute(): string {

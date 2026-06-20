@@ -46,6 +46,14 @@ export class AuthService {
     );
   }
 
+  updateProfile(data: any): Observable<AuthResponse> {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.http.patch<AuthResponse>(`${this.apiUrl}/auth/profile`, data, { headers }).pipe(
+      tap((res) => this.handleAuthSuccess(res))
+    );
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

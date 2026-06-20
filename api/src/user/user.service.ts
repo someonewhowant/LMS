@@ -22,4 +22,13 @@ export class UserService {
     const user = this.userRepository.create(userData);
     return this.userRepository.save(user);
   }
+
+  async update(id: number, userData: Partial<UserEntity>): Promise<UserEntity> {
+    await this.userRepository.update(id, userData);
+    const updated = await this.findById(id);
+    if (!updated) {
+      throw new Error('User not found');
+    }
+    return updated;
+  }
 }

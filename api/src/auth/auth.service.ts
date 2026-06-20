@@ -111,6 +111,29 @@ export class AuthService {
     };
   }
 
+  async updateProfile(userId: number, dto: { fullName?: string; password?: string; specialization?: string; experience?: number }) {
+    const updateData: Partial<UserEntity> = {};
+    if (dto.fullName) updateData.fullName = dto.fullName;
+    if (dto.password) {
+      updateData.password = await bcrypt.hash(dto.password, 10);
+    }
+    if (dto.specialization !== undefined) updateData.specialization = dto.specialization;
+    if (dto.experience !== undefined) updateData.experience = dto.experience;
+
+    const updatedUser = await this.userService.update(userId, updateData);
+    
+    // Remove password before returning
+    const userResponse = { ...updatedUser };
+    delete userResponse.password;
+
+    const token = this.generateToken(updatedUser);
+
+    return {
+      token,
+      user: userResponse,
+    };
+  }
+
   private generateToken(user: UserEntity): string {
     const payload = { sub: user.id, email: user.email, role: user.role };
     return this.jwtService.sign(payload);
