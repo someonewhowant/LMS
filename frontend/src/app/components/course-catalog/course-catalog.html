@@ -1,0 +1,231 @@
+<div class="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
+
+  <!-- Header -->
+  <app-header />
+
+  <!-- ============================== -->
+  <!-- PAGE HERO                      -->
+  <!-- ============================== -->
+  <section class="relative overflow-hidden border-b border-slate-800/60">
+    <!-- Background effects -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-[-30%] right-[-10%] w-[400px] h-[400px] rounded-full bg-violet-600/8 blur-[100px]"></div>
+      <div class="absolute bottom-[-20%] left-[-5%] w-[350px] h-[350px] rounded-full bg-indigo-600/8 blur-[80px]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10 lg:pt-16 lg:pb-12">
+      <div class="max-w-2xl">
+        <span class="inline-block px-3 py-1 text-xs font-semibold text-violet-400 bg-violet-950/60 border border-violet-800/30 rounded-full mb-4 uppercase tracking-wider">
+          Каталог
+        </span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
+          Учебные курсы
+        </h1>
+        <p class="text-base sm:text-lg text-slate-400 leading-relaxed max-w-xl">
+          Выберите курс для прохождения. Каждый курс состоит из теоретических модулей, практических заданий и тестов.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- TOOLBAR: Search + Sort         -->
+  <!-- ============================== -->
+  <section class="sticky top-16 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+
+        <!-- Search -->
+        <div class="relative flex-1 max-w-lg">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Поиск по названию или описанию..."
+            [value]="searchQuery()"
+            (input)="onSearch($any($event.target).value)"
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-900/70 border border-slate-800/60 rounded-xl text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/60 focus:bg-slate-900 transition-all"
+          />
+        </div>
+
+        <!-- Sort buttons -->
+        <div class="flex items-center space-x-1 bg-slate-900/50 border border-slate-800/40 rounded-xl p-1">
+          <button
+            (click)="onSort('newest')"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+            [class]="sortBy() === 'newest' ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-700/40' : 'text-slate-400 hover:text-slate-200 border border-transparent'"
+          >
+            Новые
+          </button>
+          <button
+            (click)="onSort('oldest')"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+            [class]="sortBy() === 'oldest' ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-700/40' : 'text-slate-400 hover:text-slate-200 border border-transparent'"
+          >
+            Старые
+          </button>
+          <button
+            (click)="onSort('title')"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+            [class]="sortBy() === 'title' ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-700/40' : 'text-slate-400 hover:text-slate-200 border border-transparent'"
+          >
+            По алфавиту
+          </button>
+        </div>
+
+        <!-- Result count -->
+        @if (!isLoading()) {
+          <span class="text-xs text-slate-500 whitespace-nowrap self-center">
+            {{ sortedCourses().length }} {{ sortedCourses().length === 1 ? 'курс' : 'курсов' }}
+          </span>
+        }
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== -->
+  <!-- COURSE GRID                    -->
+  <!-- ============================== -->
+  <main class="flex-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+
+      @if (isLoading()) {
+        <!-- Skeleton loading -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="rounded-2xl bg-slate-900/50 border border-slate-800/40 p-6 animate-pulse">
+              <div class="flex items-center space-x-3 mb-5">
+                <div class="h-11 w-11 rounded-xl bg-slate-800"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-slate-800 rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-slate-800/60 rounded w-1/2"></div>
+                </div>
+              </div>
+              <div class="space-y-2 mb-5">
+                <div class="h-3 bg-slate-800/50 rounded w-full"></div>
+                <div class="h-3 bg-slate-800/50 rounded w-4/5"></div>
+                <div class="h-3 bg-slate-800/50 rounded w-2/3"></div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="h-6 bg-slate-800/40 rounded-full w-20"></div>
+                <div class="h-8 bg-slate-800/40 rounded-lg w-24"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (sortedCourses().length > 0) {
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (course of sortedCourses(); track course.id; let i = $index) {
+            <div class="group rounded-2xl bg-slate-900/50 border border-slate-800/40 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-900/10 hover:-translate-y-1 flex flex-col overflow-hidden"
+                 [class]="getCardStyle(i).border">
+
+              <!-- Card top accent bar -->
+              <div class="h-1 w-full" [class]="getCardStyle(i).bg"></div>
+
+              <div class="p-6 flex flex-col flex-1">
+                <!-- Icon + Meta -->
+                <div class="flex items-start space-x-3.5 mb-4">
+                  <div class="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
+                       [class]="getCardStyle(i).iconBg">
+                    <span class="material-symbols-outlined" style="font-size:22px" [class]="getCardStyle(i).iconColor">
+                      {{ getCardStyle(i).icon }}
+                    </span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors leading-snug truncate">
+                      {{ course.title }}
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Создан {{ formatDate(course.createdAt) }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <p class="text-sm text-slate-400 leading-relaxed mb-5 flex-1 line-clamp-3">
+                  {{ course.description || 'Учебный курс на платформе EduFlow Academy. Содержит теоретические модули, практические задания и тесты для закрепления знаний.' }}
+                </p>
+
+                <!-- Bottom row: badge + action -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-800/40">
+                  <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border"
+                        [class]="getCardStyle(i).badge">
+                    <span class="material-symbols-outlined" style="font-size:14px">view_module</span>
+                    <span>{{ course.moduleCount }} {{ course.moduleCount === 1 ? 'модуль' : 'модулей' }}</span>
+                  </span>
+
+                  <a [routerLink]="getCourseLink(course.id)"
+                     class="inline-flex items-center px-3.5 py-1.5 text-xs font-semibold text-indigo-400 hover:text-white hover:bg-indigo-600/20 border border-indigo-800/30 hover:border-indigo-600/40 rounded-lg transition-all duration-200 group/btn">
+                    <span>Подробнее</span>
+                    <svg class="ml-1.5 h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Empty state -->
+        <div class="text-center py-20">
+          <div class="inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-slate-900/80 border border-slate-800/40 mb-6">
+            <span class="material-symbols-outlined text-slate-600" style="font-size:40px">search_off</span>
+          </div>
+          @if (searchQuery().trim()) {
+            <h3 class="text-xl font-bold text-white mb-2">Ничего не найдено</h3>
+            <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">
+              По запросу «{{ searchQuery() }}» курсов не найдено. Попробуйте изменить поисковый запрос.
+            </p>
+            <button (click)="onSearch('')" class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-400 border border-indigo-800/30 hover:bg-indigo-600/10 rounded-xl transition-all">
+              Сбросить поиск
+            </button>
+          } @else {
+            <h3 class="text-xl font-bold text-white mb-2">Курсы появятся совсем скоро</h3>
+            <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">
+              Наши преподаватели активно готовят учебные программы. Зарегистрируйтесь, чтобы получить уведомление о запуске.
+            </p>
+            <a routerLink="/register/student" class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl transition-all shadow-lg shadow-indigo-600/20">
+              Зарегистрироваться
+            </a>
+          }
+        </div>
+      }
+
+    </div>
+  </main>
+
+
+  <!-- ============================== -->
+  <!-- CTA BANNER                     -->
+  <!-- ============================== -->
+  @if (!authService.isAuthenticated()) {
+    <section class="border-t border-slate-800/60 bg-slate-900/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 p-8 rounded-2xl bg-gradient-to-br from-indigo-950/40 to-violet-950/30 border border-indigo-800/30">
+          <div>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Готовы начать обучение?</h3>
+            <p class="text-sm text-slate-400 max-w-md">
+              Создайте бесплатный аккаунт студента и получите доступ ко всем курсам, практическим заданиям и аналитике прогресса.
+            </p>
+          </div>
+          <div class="flex items-center space-x-3 shrink-0">
+            <a routerLink="/register/student" class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-xl transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.97]">
+              Создать аккаунт
+            </a>
+            <a routerLink="/login" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-slate-300 border border-slate-700/60 hover:border-slate-600 hover:text-white rounded-xl transition-all hover:bg-white/5">
+              Войти
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Footer -->
+  <app-footer />
+
+</div>

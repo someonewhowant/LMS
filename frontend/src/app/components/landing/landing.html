@@ -244,7 +244,7 @@
               <h3 class="text-lg font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{{ course.title }}</h3>
               <p class="text-sm text-slate-400 leading-relaxed mb-4 flex-1">{{ course.description || 'Курс для изучения на платформе EduFlow Academy' }}</p>
               <div class="flex items-center justify-between">
-                <span class="text-xs text-slate-500">{{ course.modules?.length || 0 }} модулей</span>
+                <span class="text-xs text-slate-500">{{ course.moduleCount || 0 }} модулей</span>
                 <a routerLink="/login" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
                   Подробнее →
                 </a>

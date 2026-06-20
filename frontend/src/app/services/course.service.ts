@@ -23,12 +23,28 @@ export interface Course {
   updatedAt: string;
 }
 
+export interface CatalogCourse {
+  id: number;
+  title: string;
+  description: string;
+  moduleCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:3000/api/courses';
+
+  /** Public catalog — no auth required */
+  getPublicCatalog(query?: string): Observable<CatalogCourse[]> {
+    const params: Record<string, string> = {};
+    if (query?.trim()) params['q'] = query.trim();
+    return this.http.get<CatalogCourse[]>(`${this.baseUrl}/catalog`, { params });
+  }
 
   getCourses(): Observable<Course[]> {
     const token = localStorage.getItem('token');

@@ -13,6 +13,30 @@ export class CourseService {
     private readonly moduleRepo: Repository<CourseModuleEntity>
   ) {}
 
+  async findAllPublic(query?: string): Promise<any[]> {
+    const qb = this.courseRepo.createQueryBuilder('course')
+      .leftJoin('course.modules', 'modules')
+      .addSelect('COUNT(modules.id)', 'moduleCount')
+      .groupBy('course.id')
+      .orderBy('course.createdAt', 'DESC');
+
+    if (query && query.trim()) {
+      const q = `%${query.trim()}%`;
+      qb.where('course.title LIKE :q OR course.description LIKE :q', { q });
+    }
+
+    const raw = await qb.getRawAndEntities();
+
+    return raw.entities.map((course, i) => ({
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      moduleCount: parseInt(raw.raw[i]?.moduleCount || '0', 10),
+      createdAt: course.createdAt,
+      updatedAt: course.updatedAt
+    }));
+  }
+
   async findAll(): Promise<CourseEntity[]> {
     return this.courseRepo.find({
       relations: { modules: true },

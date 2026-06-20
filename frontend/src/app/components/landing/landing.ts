@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CourseService, Course } from '../../services/course.service';
+import { CourseService, CatalogCourse } from '../../services/course.service';
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 
@@ -16,7 +16,7 @@ export class LandingComponent implements OnInit {
   private readonly courseService = inject(CourseService);
   private readonly router = inject(Router);
 
-  readonly courses = signal<Course[]>([]);
+  readonly courses = signal<CatalogCourse[]>([]);
   readonly isLoadingCourses = signal<boolean>(true);
 
   // Stats (could come from API later)
@@ -94,7 +94,7 @@ export class LandingComponent implements OnInit {
   }
 
   loadCourses(): void {
-    this.courseService.getCourses().subscribe({
+    this.courseService.getPublicCatalog().subscribe({
       next: (courses) => {
         this.courses.set(courses.slice(0, 3));
         this.isLoadingCourses.set(false);
