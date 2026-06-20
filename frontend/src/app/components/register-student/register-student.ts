@@ -2,10 +2,12 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { HeaderComponent } from '../header/header';
+import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-register-student',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
   templateUrl: './register-student.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -62,7 +64,7 @@ export class RegisterStudentComponent {
         this.isLoading.set(false);
         this.isSuccess.set(true);
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/student/dashboard']);
         }, 1500);
       },
       error: (err) => {
@@ -74,7 +76,7 @@ export class RegisterStudentComponent {
           console.warn('Backend not responding, simulating successful registration for prototyping', err);
           this.isSuccess.set(true);
           setTimeout(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/student/dashboard']);
           }, 1500);
         }
       }

@@ -134,9 +134,9 @@
                   <div class="flex items-center justify-between text-xs">
                     <div class="flex items-center space-x-2">
                       <div class="h-6 w-6 rounded-full bg-slate-850 flex items-center justify-center font-bold text-indigo-400 text-[10px]">
-                        {{ comment.user?.fullName?.charAt(0) || 'U' }}
+                        {{ comment.user.fullName.charAt(0) || 'U' }}
                       </div>
-                      <span class="font-semibold text-slate-300">{{ comment.user?.fullName }}</span>
+                      <span class="font-semibold text-slate-300">{{ comment.user.fullName }}</span>
                     </div>
                     <span class="text-slate-500">
                       {{ comment.createdAt | date:'dd.MM.yyyy HH:mm' }}

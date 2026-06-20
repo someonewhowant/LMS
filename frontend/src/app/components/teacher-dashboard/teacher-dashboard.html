@@ -72,18 +72,18 @@
           @for (bookmark of bookmarks(); track bookmark.id) {
             <div class="space-y-1">
               @if (bookmark.targetType === 'course') {
-                <span class="inline-flex px-1.5 py-0.5 text-[8px] font-bold bg-indigo-950 text-indigo-455 border border-indigo-900 rounded uppercase">
+                <span class="inline-flex px-1.5 py-0.5 text-[8px] font-bold bg-indigo-950 text-indigo-400 border border-indigo-900 rounded uppercase">
                   Курс
                 </span>
-                <a [routerLink]="['/student/course', bookmark.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-405 transition-colors">
-                  {{ bookmark.course?.title || 'Загрузка...' }}
+                <a [routerLink]="['/student/course', bookmark.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors">
+                  {{ bookmark.title || 'Курс без названия' }}
                 </a>
               } @else if (bookmark.targetType === 'post') {
-                <span class="inline-flex px-1.5 py-0.5 text-[8px] font-bold bg-violet-950 text-violet-455 border border-violet-900 rounded uppercase">
+                <span class="inline-flex px-1.5 py-0.5 text-[8px] font-bold bg-violet-950 text-violet-400 border border-violet-900 rounded uppercase">
                   Статья
                 </span>
-                <a [routerLink]="['/blog/post', bookmark.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-405 transition-colors">
-                  {{ bookmark.post?.title || 'Загрузка...' }}
+                <a [routerLink]="['/blog/post', bookmark.slugOrId || bookmark.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors">
+                  {{ bookmark.title || 'Статья без названия' }}
                 </a>
               }
             </div>
