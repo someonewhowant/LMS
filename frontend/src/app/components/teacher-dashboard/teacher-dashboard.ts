@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { CourseService, Course, CourseModule } from '../../services/course.service';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -9,34 +9,164 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './teacher-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TeacherDashboardComponent {
+export class TeacherDashboardComponent implements OnInit {
   readonly authService = inject(AuthService);
-  private readonly http = inject(HttpClient);
+  private readonly courseService = inject(CourseService);
   private readonly router = inject(Router);
 
-  // Signals
-  readonly isCreatingCourse = signal<boolean>(false);
+  // States
+  readonly courses = signal<Course[]>([]);
+  readonly isLoading = signal<boolean>(true);
+  readonly selectedCourse = signal<Course | null>(null);
+
+  // Forms
+  readonly showCreateCourseModal = signal<boolean>(false);
+  readonly newCourseTitle = signal<string>('');
+  readonly newCourseDescription = signal<string>('');
+
+  readonly showCreateModuleModal = signal<boolean>(false);
+  readonly newModuleTitle = signal<string>('');
+  readonly newModuleDescription = signal<string>('');
+  readonly newModuleOrder = signal<number>(1);
+  readonly theoryFileContent = signal<string>('');
+  readonly theoryFileName = signal<string>('');
+  readonly giftFileContent = signal<string>('');
+  readonly giftFileName = signal<string>('');
+
+  readonly isSubmitting = signal<boolean>(false);
   readonly responseMessage = signal<string | null>(null);
 
-  createCourseMock(): void {
-    this.isCreatingCourse.set(true);
-    this.responseMessage.set(null);
+  ngOnInit(): void {
+    this.loadCourses();
+  }
 
-    // Call the admin/teacher-allowed endpoint to verify credentials
-    const token = localStorage.getItem('token');
-    this.http.get('http://localhost:3000/api/admin/dashboard', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).subscribe({
-      next: (res: any) => {
-        this.isCreatingCourse.set(false);
-        this.responseMessage.set('Запрос успешно проверен бэкендом (Доступ к /admin/** разрешен для Преподавателей)! Ресурс создан.');
+  loadCourses(): void {
+    this.isLoading.set(true);
+    this.courseService.getCourses().subscribe({
+      next: (coursesList) => {
+        this.courses.set(coursesList);
+        this.isLoading.set(false);
       },
       error: (err) => {
-        this.isCreatingCourse.set(false);
-        console.warn('Backend integration warning, falling back to mock dashboard control', err);
-        this.responseMessage.set('Новый курс успешно создан (Имитация панели администратора)!');
+        console.error('Error fetching courses', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  selectCourse(course: Course): void {
+    this.isLoading.set(true);
+    this.courseService.getCourseById(course.id).subscribe({
+      next: (courseData) => {
+        this.selectedCourse.set(courseData);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching course detail', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  onCreateCourse(): void {
+    if (!this.newCourseTitle().trim()) return;
+
+    this.isSubmitting.set(true);
+    this.courseService.createCourse({
+      title: this.newCourseTitle(),
+      description: this.newCourseDescription()
+    }).subscribe({
+      next: (created) => {
+        this.isSubmitting.set(false);
+        this.showCreateCourseModal.set(false);
+        this.newCourseTitle.set('');
+        this.newCourseDescription.set('');
+        this.responseMessage.set(`Курс "${created.title}" успешно создан!`);
+        this.loadCourses();
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSubmitting.set(false);
+        this.responseMessage.set('Ошибка создания курса.');
+      }
+    });
+  }
+
+  onTheoryFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.theoryFileName.set(file.name);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.theoryFileContent.set(e.target?.result as string || '');
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  onGiftFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.giftFileName.set(file.name);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.giftFileContent.set(e.target?.result as string || '');
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  onCreateModule(): void {
+    const course = this.selectedCourse();
+    if (!course || !this.newModuleTitle().trim()) return;
+
+    this.isSubmitting.set(true);
+    this.courseService.createModule(course.id, {
+      title: this.newModuleTitle(),
+      description: this.newModuleDescription(),
+      order: this.newModuleOrder(),
+      theoryContent: this.theoryFileContent(),
+      giftContent: this.giftFileContent()
+    }).subscribe({
+      next: (created) => {
+        this.isSubmitting.set(false);
+        this.showCreateModuleModal.set(false);
+        this.newModuleTitle.set('');
+        this.newModuleDescription.set('');
+        this.newModuleOrder.set(1);
+        this.theoryFileContent.set('');
+        this.theoryFileName.set('');
+        this.giftFileContent.set('');
+        this.giftFileName.set('');
+        this.responseMessage.set(`Модуль "${created.title}" успешно добавлен!`);
+        
+        // Refresh selected course
+        this.selectCourse(course);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSubmitting.set(false);
+        this.responseMessage.set('Ошибка добавления модуля.');
+      }
+    });
+  }
+
+  deleteModule(moduleId: number): void {
+    if (!confirm('Вы уверены, что хотите удалить этот модуль?')) return;
+
+    this.courseService.deleteModule(moduleId).subscribe({
+      next: () => {
+        this.responseMessage.set('Модуль удален.');
+        const course = this.selectedCourse();
+        if (course) {
+          this.selectCourse(course);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.responseMessage.set('Не удалось удалить модуль.');
       }
     });
   }

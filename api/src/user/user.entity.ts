@@ -30,6 +30,14 @@ export class UserEntity {
   @Column({ type: 'int', nullable: true })
   experience?: number;
 
+  @ApiProperty({ example: 1, required: false, description: 'The last opened course identifier' })
+  @Column({ type: 'int', nullable: true })
+  lastOpenedCourseId?: number;
+
+  @ApiProperty({ example: 3, required: false, description: 'The last opened course module identifier' })
+  @Column({ type: 'int', nullable: true })
+  lastOpenedModuleId?: number;
+
   @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;

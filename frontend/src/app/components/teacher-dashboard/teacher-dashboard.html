@@ -54,7 +54,7 @@
         <div class="p-4 rounded-2xl bg-violet-950/40 border border-violet-800/40">
           <h4 class="text-sm font-semibold text-violet-300">Быстрые действия</h4>
           <p class="text-xs text-slate-400 mt-1">Вы можете создавать новые учебные курсы и управлять модулями.</p>
-          <button (click)="createCourseMock()" [disabled]="isCreatingCourse()" class="mt-3 block text-center w-full px-3 py-2 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white rounded-xl text-xs font-semibold transition-all">
+          <button (click)="showCreateCourseModal.set(true)" class="mt-3 block text-center w-full px-3 py-2 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white rounded-xl text-xs font-semibold transition-all">
             Добавить курс
           </button>
         </div>
@@ -63,10 +63,12 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+      
+      <!-- Top header banner -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 class="text-2xl font-bold tracking-tight text-white">Панель преподавателя</h2>
-          <p class="text-sm text-slate-400 mt-1">Отслеживайте успеваемость студентов, изменяйте контент курсов и управляйте заданиями.</p>
+          <h2 class="text-2xl font-bold tracking-tight text-white">Панель управления обучением</h2>
+          <p class="text-sm text-slate-400 mt-1">Разрабатывайте новые курсы, загружайте теоретические материалы (Markdown) и тесты (GIFT).</p>
         </div>
         <div class="px-4 py-2 bg-slate-900/80 border border-slate-800 rounded-2xl flex items-center space-x-3 text-xs text-slate-300">
           <span class="font-semibold">Специализация:</span>
@@ -77,103 +79,277 @@
         </div>
       </div>
 
+      <!-- Action Response Messages -->
       @if (responseMessage()) {
-        <div class="p-4 rounded-2xl bg-violet-950/30 border border-violet-850 text-xs text-violet-300">
-          {{ responseMessage() }}
+        <div class="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-850 text-xs text-indigo-300 flex justify-between items-center">
+          <span>{{ responseMessage() }}</span>
+          <button (click)="responseMessage.set(null)" class="text-indigo-400 hover:text-white">&times;</button>
         </div>
       }
 
-      <!-- Teacher Metrics Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Активные курсы</p>
-          <p class="text-3xl font-bold text-white mt-2">5</p>
-          <span class="text-xs text-violet-400 font-semibold mt-2 block">Создано вами</span>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Всего студентов</p>
-          <p class="text-3xl font-bold text-violet-400 mt-2">124</p>
-          <span class="text-xs text-slate-500 mt-2 block">С уникальными профилями</span>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Успеваемость по тестам</p>
-          <p class="text-3xl font-bold text-emerald-400 mt-2">82%</p>
-          <span class="text-xs text-emerald-400 font-semibold mt-2 block">Выше среднего</span>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Задач на проверку</p>
-          <p class="text-3xl font-bold text-rose-450 mt-2">8</p>
-          <span class="text-xs text-slate-500 mt-2 block">Ожидают оценки</span>
-        </div>
-      </div>
-
-      <!-- Student Progress List -->
-      <div class="space-y-6">
-        <h3 class="text-lg font-bold text-white tracking-tight">Успеваемость студентов</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl overflow-hidden">
-          <table class="w-full border-collapse text-left text-sm">
-            <thead>
-              <tr class="bg-slate-900 border-b border-slate-800 text-slate-400">
-                <th class="p-4 font-semibold">Студент</th>
-                <th class="p-4 font-semibold">Курс</th>
-                <th class="p-4 font-semibold">Пройдено модулей</th>
-                <th class="p-4 font-semibold">Успеваемость</th>
-                <th class="p-4 font-semibold">Статус</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800/60 text-slate-300">
-              <tr class="hover:bg-slate-900/20 transition-all">
-                <td class="p-4 font-semibold text-slate-200">Alexey Smirnov</td>
-                <td class="p-4">Основы Angular и RXJS</td>
-                <td class="p-4">6 / 10</td>
-                <td class="p-4">
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs">60%</span>
-                    <div class="w-20 bg-slate-800 rounded-full h-1 overflow-hidden">
-                      <div class="bg-violet-500 h-full rounded-full" style="width: 60%"></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="p-4"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 rounded-full text-xs">Активен</span></td>
-              </tr>
-
-              <tr class="hover:bg-slate-900/20 transition-all">
-                <td class="p-4 font-semibold text-slate-200">Ekaterina Petrova</td>
-                <td class="p-4">Архитектура NestJS и TypeORM</td>
-                <td class="p-4">10 / 12</td>
-                <td class="p-4">
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs">83%</span>
-                    <div class="w-20 bg-slate-800 rounded-full h-1 overflow-hidden">
-                      <div class="bg-violet-500 h-full rounded-full" style="width: 83%"></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="p-4"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 rounded-full text-xs">Активен</span></td>
-              </tr>
-
-              <tr class="hover:bg-slate-900/20 transition-all">
-                <td class="p-4 font-semibold text-slate-200">Dmitry Ivanov</td>
-                <td class="p-4">Основы Angular и RXJS</td>
-                <td class="p-4">2 / 10</td>
-                <td class="p-4">
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs">20%</span>
-                    <div class="w-20 bg-slate-800 rounded-full h-1 overflow-hidden">
-                      <div class="bg-amber-500 h-full rounded-full" style="width: 20%"></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="p-4"><span class="px-2 py-0.5 bg-amber-950 text-amber-400 rounded-full text-xs">Отстает</span></td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Courses management column -->
+        <div class="lg:col-span-4 space-y-4">
+          <h3 class="text-lg font-bold text-white tracking-tight">Ваши курсы</h3>
+          
+          @if (isLoading() && courses().length === 0) {
+            <div class="flex items-center justify-center py-6">
+              <div class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          } @else {
+            <div class="space-y-2">
+              @for (c of courses(); track c.id) {
+                <button 
+                  (click)="selectCourse(c)"
+                  [class]="selectedCourse()?.id === c.id ? 'w-full text-left p-4 rounded-xl border border-violet-500 bg-violet-950/20 transition-all' : 'w-full text-left p-4 rounded-xl border border-slate-850 bg-slate-900/35 hover:bg-slate-900 transition-all'"
+                >
+                  <h4 class="font-bold text-sm text-slate-200">{{ c.title }}</h4>
+                  <p class="text-xs text-slate-400 line-clamp-1 mt-1">{{ c.description }}</p>
+                </button>
+              } @empty {
+                <div class="p-6 rounded-xl bg-slate-900/20 border border-slate-850 text-center text-xs text-slate-500">
+                  Курсы еще не добавлены.
+                </div>
+              }
+            </div>
+          }
         </div>
+
+        <!-- Course modules workspace -->
+        <div class="lg:col-span-8 space-y-6">
+          @if (selectedCourse()) {
+            <div class="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-6">
+              <div class="flex justify-between items-start border-b border-slate-800/80 pb-4">
+                <div>
+                  <span class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Управление модулями курса</span>
+                  <h3 class="text-xl font-bold text-white mt-1">{{ selectedCourse()?.title }}</h3>
+                  <p class="text-xs text-slate-400 mt-0.5">{{ selectedCourse()?.description }}</p>
+                </div>
+                <button 
+                  (click)="showCreateModuleModal.set(true)" 
+                  class="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-bold transition-all"
+                >
+                  Добавить модуль
+                </button>
+              </div>
+
+              <!-- Modules List -->
+              <div class="space-y-2">
+                @for (mod of selectedCourse()?.modules; track mod.id) {
+                  <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl flex items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 text-xs font-bold border border-slate-800">
+                        {{ mod.order }}
+                      </div>
+                      <div>
+                        <h4 class="font-bold text-sm text-slate-200">{{ mod.title }}</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">{{ mod.description }}</p>
+                        <div class="flex items-center space-x-4 mt-2">
+                          @if (mod.theoryContent) {
+                            <span class="inline-flex items-center text-[10px] text-emerald-400 font-semibold bg-emerald-950/40 border border-emerald-900/60 px-2 py-0.5 rounded">
+                              Теория (.md)
+                            </span>
+                          }
+                          @if (mod.giftContent) {
+                            <span class="inline-flex items-center text-[10px] text-violet-400 font-semibold bg-violet-950/40 border border-violet-900/60 px-2 py-0.5 rounded">
+                              Тест (.gift)
+                            </span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                    <button 
+                      (click)="deleteModule(mod.id)" 
+                      class="p-2 text-slate-500 hover:text-rose-400 transition-colors duration-150 rounded-lg hover:bg-rose-950/10" 
+                      title="Удалить"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                } @empty {
+                  <div class="p-8 text-center text-xs text-slate-500 bg-slate-950/40 border border-dashed border-slate-850 rounded-xl">
+                    В этом курсе еще нет модулей. Нажмите кнопку "Добавить модуль" выше!
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="p-12 border-2 border-dashed border-slate-850 rounded-3xl text-center text-slate-500 flex flex-col items-center justify-center space-y-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-650" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <div>
+                <h4 class="font-bold text-sm text-slate-400">Курс не выбран</h4>
+                <p class="text-xs text-slate-600 mt-1">Выберите курс из списка слева, чтобы начать редактировать его модули.</p>
+              </div>
+            </div>
+          }
+        </div>
+
       </div>
+
     </main>
   </div>
+
+  <!-- Create Course Modal -->
+  @if (showCreateCourseModal()) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white">Создание нового курса</h3>
+          <button (click)="showCreateCourseModal.set(false)" class="text-slate-400 hover:text-white">&times;</button>
+        </div>
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-slate-400">Название курса</label>
+            <input 
+              [value]="newCourseTitle()"
+              (input)="newCourseTitle.set($any($event.target).value)"
+              type="text" 
+              class="w-full px-4 py-2.5 bg-slate-950 border border-slate-850 rounded-xl text-sm text-slate-200 focus:border-violet-500 focus:outline-none"
+              placeholder="Например: Основы Angular 21"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-slate-400">Описание</label>
+            <textarea 
+              [value]="newCourseDescription()"
+              (input)="newCourseDescription.set($any($event.target).value)"
+              class="w-full px-4 py-2.5 bg-slate-950 border border-slate-850 rounded-xl text-sm text-slate-200 focus:border-violet-500 focus:outline-none resize-none"
+              rows="3"
+              placeholder="Краткое описание целей курса..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="flex space-x-3 pt-2 justify-end">
+          <button 
+            (click)="showCreateCourseModal.set(false)" 
+            class="px-4 py-2 border border-slate-800 text-slate-400 hover:bg-slate-850 rounded-xl text-xs font-semibold transition-all"
+          >
+            Отмена
+          </button>
+          <button 
+            (click)="onCreateCourse()" 
+            [disabled]="isSubmitting() || !newCourseTitle().trim()"
+            class="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+          >
+            Создать
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Create Module Modal -->
+  @if (showCreateModuleModal()) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white">Добавление нового модуля</h3>
+          <button (click)="showCreateModuleModal.set(false)" class="text-slate-400 hover:text-white">&times;</button>
+        </div>
+        <div class="space-y-4">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2 space-y-1">
+              <label class="text-xs font-semibold text-slate-400">Название модуля</label>
+              <input 
+                [value]="newModuleTitle()"
+                (input)="newModuleTitle.set($any($event.target).value)"
+                type="text" 
+                class="w-full px-4 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-200 focus:border-violet-500 focus:outline-none"
+                placeholder="Введение в компоненты"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-slate-400">Порядковый номер</label>
+              <input 
+                [value]="newModuleOrder()"
+                (input)="newModuleOrder.set($any($event.target).value)"
+                type="number" 
+                class="w-full px-4 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-200 focus:border-violet-500 focus:outline-none"
+                placeholder="1"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-slate-400">Описание модуля</label>
+            <textarea 
+              [value]="newModuleDescription()"
+              (input)="newModuleDescription.set($any($event.target).value)"
+              class="w-full px-4 py-2 bg-slate-950 border border-slate-850 rounded-xl text-xs text-slate-200 focus:border-violet-500 focus:outline-none resize-none"
+              rows="2"
+              placeholder="Краткое содержание модуля..."
+            ></textarea>
+          </div>
+
+          <!-- File upload: Markdown for Theory -->
+          <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-semibold text-slate-400">Теоретический материал (.md)</span>
+              @if (theoryFileName()) {
+                <span class="text-[10px] text-emerald-400 font-bold truncate max-w-[200px]" [title]="theoryFileName()">
+                  {{ theoryFileName() }}
+                </span>
+              }
+            </div>
+            <div class="flex items-center justify-center w-full">
+              <label class="flex flex-col items-center justify-center w-full h-24 border border-dashed border-slate-800 rounded-xl cursor-pointer hover:border-violet-500/50 hover:bg-slate-900/20 transition-all">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p class="text-[10px] text-slate-500">Загрузить Markdown файл теории</p>
+                </div>
+                <input type="file" class="hidden" accept=".md,.txt" (change)="onTheoryFileChange($event)" />
+              </label>
+            </div>
+          </div>
+
+          <!-- File upload: GIFT for Test -->
+          <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-semibold text-slate-400">Тест / Квиз (.gift)</span>
+              @if (giftFileName()) {
+                <span class="text-[10px] text-violet-400 font-bold truncate max-w-[200px]" [title]="giftFileName()">
+                  {{ giftFileName() }}
+                </span>
+              }
+            </div>
+            <div class="flex items-center justify-center w-full">
+              <label class="flex flex-col items-center justify-center w-full h-24 border border-dashed border-slate-800 rounded-xl cursor-pointer hover:border-violet-500/50 hover:bg-slate-900/20 transition-all">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                  <p class="text-[10px] text-slate-500">Загрузить GIFT файл тестов</p>
+                </div>
+                <input type="file" class="hidden" accept=".gift,.txt" (change)="onGiftFileChange($event)" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex space-x-3 pt-2 justify-end">
+          <button 
+            (click)="showCreateModuleModal.set(false)" 
+            class="px-4 py-2 border border-slate-800 text-slate-400 hover:bg-slate-850 rounded-xl text-xs font-semibold transition-all"
+          >
+            Отмена
+          </button>
+          <button 
+            (click)="onCreateModule()" 
+            [disabled]="isSubmitting() || !newModuleTitle().trim()"
+            class="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+          >
+            Добавить
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
+

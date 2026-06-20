@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CourseModule } from './course/course.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 @Module({
@@ -26,6 +27,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     UserModule,
     AuthModule,
     DashboardModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

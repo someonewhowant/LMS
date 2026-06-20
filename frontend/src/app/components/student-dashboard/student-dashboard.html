@@ -80,107 +80,54 @@
         </div>
       </div>
 
-      <!-- Quick Metrics Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all duration-200">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Курсы в процессе</p>
-          <p class="text-3xl font-bold text-white mt-2">3</p>
-          <div class="mt-4 flex items-center space-x-2">
-            <span class="text-xs text-emerald-400 font-semibold">+1 на этой неделе</span>
+      <!-- Continue Learning Banner -->
+      @if (lastOpenedCourse() && lastOpenedModule()) {
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/45 to-violet-900/45 border border-indigo-500/20 p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-xl">
+          <div class="space-y-1">
+            <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider">Продолжить обучение</h4>
+            <p class="text-base text-slate-200">Возобновите обучение с того места, где вы остановились в последний раз.</p>
           </div>
+          <button (click)="continueLearning()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center space-x-2 shrink-0">
+            <span>Продолжить урок</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all duration-200">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Общий прогресс</p>
-          <p class="text-3xl font-bold text-indigo-400 mt-2">68%</p>
-          <div class="mt-4 w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-indigo-500 h-full rounded-full" style="width: 68%"></div>
-          </div>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all duration-200">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Запросы Peer Review</p>
-          <p class="text-3xl font-bold text-amber-400 mt-2">2</p>
-          <div class="mt-4 flex items-center space-x-2">
-            <span class="text-xs text-amber-300/80">Ожидают вашей проверки</span>
-          </div>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700/80 transition-all duration-200">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Сообщения от менторов</p>
-          <p class="text-3xl font-bold text-sky-400 mt-2">1</p>
-          <div class="mt-4 flex items-center space-x-2">
-            <span class="text-xs text-slate-400">Чат с преподавателем</span>
-          </div>
-        </div>
-      </div>
+      }
 
       <!-- Core Modules List -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
           <h3 class="text-lg font-bold text-white tracking-tight">Ваши активные курсы</h3>
           
-          <div class="space-y-4">
-            <!-- Course 1 -->
-            <div class="p-5 bg-slate-900/40 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-900/80 transition-all duration-200">
-              <div class="space-y-1">
-                <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded bg-indigo-950 text-indigo-400 uppercase">Веб-разработка</span>
-                <h4 class="text-base font-bold text-slate-200 mt-1">Основы Angular и RXJS</h4>
-                <p class="text-xs text-slate-400">Преподаватель: Jane Doe • Модуль 4 из 10</p>
-              </div>
-              <div class="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end">
-                <div class="text-right sm:min-w-[120px]">
-                  <p class="text-sm font-semibold text-indigo-400">Прогресс: 40%</p>
-                  <div class="mt-1.5 w-24 bg-slate-800 rounded-full h-1 overflow-hidden">
-                    <div class="bg-indigo-500 h-full rounded-full" style="width: 40%"></div>
+          @if (isLoading()) {
+            <div class="flex flex-col items-center justify-center py-12 space-y-3">
+              <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+              <p class="text-slate-500 text-xs">Загрузка курсов...</p>
+            </div>
+          } @else {
+            <div class="space-y-4">
+              @for (course of courses(); track course.id) {
+                <div class="p-5 bg-slate-900/40 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-900/80 hover:border-slate-700/50 transition-all duration-200">
+                  <div class="space-y-1">
+                    <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded bg-indigo-950 text-indigo-400 uppercase">Обучение</span>
+                    <h4 class="text-base font-bold text-slate-200 mt-1">{{ course.title }}</h4>
+                    <p class="text-xs text-slate-400">{{ course.description }}</p>
+                  </div>
+                  <div class="flex items-center space-x-4 w-full sm:w-auto justify-between sm:justify-end">
+                    <a [routerLink]="['/student/course', course.id]" class="px-4 py-2 bg-indigo-650 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold transition-all">
+                      Открыть программу
+                    </a>
                   </div>
                 </div>
-                <button class="px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
-                  Продолжить
-                </button>
-              </div>
-            </div>
-
-            <!-- Course 2 -->
-            <div class="p-5 bg-slate-900/40 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-900/80 transition-all duration-200">
-              <div class="space-y-1">
-                <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded bg-emerald-950 text-emerald-400 uppercase">Бэкенд</span>
-                <h4 class="text-base font-bold text-slate-200 mt-1">Архитектура NestJS и TypeORM</h4>
-                <p class="text-xs text-slate-400">Преподаватель: Jane Doe • Модуль 8 из 12</p>
-              </div>
-              <div class="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end">
-                <div class="text-right sm:min-w-[120px]">
-                  <p class="text-sm font-semibold text-emerald-400">Прогресс: 75%</p>
-                  <div class="mt-1.5 w-24 bg-slate-800 rounded-full h-1 overflow-hidden">
-                    <div class="bg-emerald-500 h-full rounded-full" style="width: 75%"></div>
-                  </div>
+              } @empty {
+                <div class="p-8 rounded-2xl bg-slate-900/20 border border-slate-850 text-center text-slate-450 text-xs">
+                  Пока нет доступных курсов. Преподаватели скоро добавят новые материалы!
                 </div>
-                <button class="px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
-                  Продолжить
-                </button>
-              </div>
+              }
             </div>
-
-            <!-- Course 3 -->
-            <div class="p-5 bg-slate-900/40 border border-slate-800/80 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-900/80 transition-all duration-200">
-              <div class="space-y-1">
-                <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded bg-violet-950 text-violet-400 uppercase">Алгоритмы</span>
-                <h4 class="text-base font-bold text-slate-200 mt-1">Структуры данных на TypeScript</h4>
-                <p class="text-xs text-slate-400">Преподаватель: Jane Doe • Модуль 12 из 12</p>
-              </div>
-              <div class="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end">
-                <div class="text-right sm:min-w-[120px]">
-                  <p class="text-sm font-semibold text-violet-400">Прогресс: 90%</p>
-                  <div class="mt-1.5 w-24 bg-slate-800 rounded-full h-1 overflow-hidden">
-                    <div class="bg-violet-500 h-full rounded-full" style="width: 90%"></div>
-                  </div>
-                </div>
-                <button class="px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded-xl text-xs font-semibold transition-all">
-                  Продолжить
-                </button>
-              </div>
-            </div>
-          </div>
+          }
         </div>
 
         <!-- Sidebar Actions/Stats -->

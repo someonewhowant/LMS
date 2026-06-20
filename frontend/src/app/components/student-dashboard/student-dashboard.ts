@@ -1,6 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { CourseService, Course } from '../../services/course.service';
+import { ProgressService } from '../../services/progress.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -8,9 +10,50 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './student-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudentDashboardComponent {
+export class StudentDashboardComponent implements OnInit {
   readonly authService = inject(AuthService);
+  private readonly courseService = inject(CourseService);
+  private readonly progressService = inject(ProgressService);
   private readonly router = inject(Router);
+
+  // Signal states
+  readonly courses = signal<Course[]>([]);
+  readonly isLoading = signal<boolean>(true);
+  readonly lastOpenedCourse = signal<number | null>(null);
+  readonly lastOpenedModule = signal<number | null>(null);
+
+  ngOnInit(): void {
+    // Check user's last opened positions
+    const user = this.authService.currentUser();
+    if (user?.lastOpenedCourseId && user?.lastOpenedModuleId) {
+      this.lastOpenedCourse.set(user.lastOpenedCourseId);
+      this.lastOpenedModule.set(user.lastOpenedModuleId);
+    }
+
+    this.loadCourses();
+  }
+
+  loadCourses(): void {
+    this.isLoading.set(true);
+    this.courseService.getCourses().subscribe({
+      next: (coursesList) => {
+        this.courses.set(coursesList);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching courses', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  continueLearning(): void {
+    const courseId = this.lastOpenedCourse();
+    const moduleId = this.lastOpenedModule();
+    if (courseId && moduleId) {
+      this.router.navigate(['/student/course', courseId, 'module', moduleId]);
+    }
+  }
 
   logout(): void {
     this.authService.logout();

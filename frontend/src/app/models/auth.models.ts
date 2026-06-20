@@ -5,6 +5,8 @@ export interface User {
   role: 'student' | 'teacher' | 'admin';
   specialization?: string;
   experience?: number;
+  lastOpenedCourseId?: number;
+  lastOpenedModuleId?: number;
 }
 
 export interface AuthResponse {

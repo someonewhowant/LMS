@@ -20,6 +20,16 @@ export const routes: Routes = [
     canActivate: [roleGuard(['student'])]
   },
   {
+    path: 'student/course/:courseId',
+    loadComponent: () => import('./components/course-details/course-details').then((m) => m.CourseDetailsComponent),
+    canActivate: [roleGuard(['student'])]
+  },
+  {
+    path: 'student/course/:courseId/module/:moduleId',
+    loadComponent: () => import('./components/module-viewer/module-viewer').then((m) => m.ModuleViewerComponent),
+    canActivate: [roleGuard(['student'])]
+  },
+  {
     path: 'student/coding_sandbox',
     loadComponent: () => import('./components/student-coding-sandbox/student-coding-sandbox').then((m) => m.StudentCodingSandboxComponent),
     canActivate: [roleGuard(['student'])]
