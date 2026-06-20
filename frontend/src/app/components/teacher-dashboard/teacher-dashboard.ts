@@ -3,7 +3,6 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CourseService, Course, CourseModule } from '../../services/course.service';
 import { BookmarkService } from '../../services/bookmark.service';
-
 @Component({
   selector: 'app-teacher-dashboard',
   imports: [RouterLink],
