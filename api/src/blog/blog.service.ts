@@ -65,7 +65,7 @@ export class BlogService {
   // Posts
   async createPost(
     author: UserEntity,
-    data: { title: string; content: string; categoryId?: number; tagNames?: string[] }
+    data: { title: string; content: string; coverImageUrl?: string; categoryId?: number; tagNames?: string[] }
   ): Promise<PostEntity> {
     let slug = slugify(data.title);
     const exists = await this.postRepository.findOne({ where: { slug } });
@@ -98,6 +98,7 @@ export class BlogService {
       title: data.title,
       slug,
       content: data.content,
+      coverImageUrl: data.coverImageUrl,
       category,
       tags,
       author: author || undefined
@@ -106,7 +107,14 @@ export class BlogService {
     return this.postRepository.save(post);
   }
 
-  async getPosts(categoryId?: number, tagId?: number): Promise<PostEntity[]> {
+  async getPosts(
+    page: number = 1,
+    limit: number = 10,
+    sort: 'newest' | 'oldest' | 'discussed' | 'popular' = 'newest',
+    categoryId?: number,
+    tagId?: number,
+    search?: string
+  ): Promise<{ data: PostEntity[], total: number }> {
     const queryBuilder = this.postRepository.createQueryBuilder('post')
       .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('post.tags', 'tags')
@@ -121,7 +129,39 @@ export class BlogService {
       queryBuilder.innerJoin('post.tags', 'tagFilter', 'tagFilter.id = :tagId', { tagId });
     }
 
-    return queryBuilder.orderBy('post.createdAt', 'DESC').getMany();
+    if (search) {
+      queryBuilder.andWhere('(post.title LIKE :search OR post.content LIKE :search)', { search: `%${search}%` });
+    }
+
+    if (sort === 'newest') {
+      queryBuilder.orderBy('post.createdAt', 'DESC');
+    } else if (sort === 'oldest') {
+      queryBuilder.orderBy('post.createdAt', 'ASC');
+    } else if (sort === 'discussed') {
+      // Order by number of comments
+      queryBuilder.addSelect(
+        subQuery => subQuery
+          .select('COUNT(comment.id)')
+          .from(CommentEntity, 'comment')
+          .where('comment.postId = post.id'),
+        'commentCount'
+      ).orderBy('commentCount', 'DESC').addOrderBy('post.createdAt', 'DESC');
+    } else if (sort === 'popular') {
+      // Order by number of bookmarks
+      queryBuilder.addSelect(
+        subQuery => subQuery
+          .select('COUNT(bookmark.id)')
+          .from(BookmarkEntity, 'bookmark')
+          .where('bookmark.targetType = :type', { type: 'post' })
+          .andWhere('bookmark.targetId = post.id'),
+        'bookmarkCount'
+      ).orderBy('bookmarkCount', 'DESC').addOrderBy('post.createdAt', 'DESC');
+    }
+
+    queryBuilder.skip((page - 1) * limit).take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
+    return { data, total };
   }
 
   async getPostByIdOrSlug(idOrSlug: string): Promise<PostEntity> {
@@ -150,22 +190,7 @@ export class BlogService {
     return post;
   }
 
-  async searchPosts(query: string): Promise<PostEntity[]> {
-    return this.postRepository.find({
-      where: [
-        { title: Like(`%${query}%`) },
-        { content: Like(`%${query}%`) }
-      ],
-      relations: {
-        category: true,
-        tags: true,
-        author: true
-      },
-      order: {
-        createdAt: 'DESC'
-      }
-    });
-  }
+
 
   // Comments
   async createComment(postId: number, user: UserEntity, content: string): Promise<CommentEntity> {

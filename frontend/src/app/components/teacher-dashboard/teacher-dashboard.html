@@ -29,10 +29,15 @@
       <div class="pt-6 border-t border-slate-900 space-y-4">
         <div class="p-4 rounded-2xl bg-violet-950/40 border border-violet-800/40">
           <h4 class="text-sm font-semibold text-violet-300">Быстрые действия</h4>
-          <p class="text-xs text-slate-400 mt-1">Вы можете создавать новые учебные курсы и управлять модулями.</p>
-          <button (click)="showCreateCourseModal.set(true)" class="mt-3 block text-center w-full px-3 py-2 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white rounded-xl text-xs font-semibold transition-all">
-            Добавить курс
-          </button>
+          <p class="text-xs text-slate-400 mt-1">Создавайте новые учебные курсы и пишите статьи в блог.</p>
+          <div class="mt-3 space-y-2">
+            <button (click)="showCreateCourseModal.set(true)" class="block text-center w-full px-3 py-2 bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white rounded-xl text-xs font-semibold transition-all">
+              Добавить курс
+            </button>
+            <button (click)="showCreatePostModal.set(true)" class="block text-center w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition-all">
+              Написать статью
+            </button>
+          </div>
         </div>
       </div>
 
@@ -349,6 +354,91 @@
             class="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
           >
             Добавить
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+  <!-- Create Post Modal -->
+  @if (showCreatePostModal()) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-2xl w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="text-lg font-bold text-white">Новая публикация</h3>
+          <button (click)="showCreatePostModal.set(false)" class="text-slate-400 hover:text-white">&times;</button>
+        </div>
+
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Заголовок статьи</label>
+            <input 
+              [value]="newPostTitle()"
+              (input)="newPostTitle.set($any($event.target).value)"
+              placeholder="Введите название..."
+              class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Категория</label>
+              <select 
+                (change)="newPostCategoryId.set($any($event.target).value ? +$any($event.target).value : undefined)"
+                class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
+              >
+                <option value="">Без категории</option>
+                @for (cat of categories(); track cat.id) {
+                  <option [value]="cat.id" [selected]="newPostCategoryId() === cat.id">{{ cat.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Теги (через запятую)</label>
+              <input 
+                [value]="newPostTagNames()"
+                (input)="newPostTagNames.set($any($event.target).value)"
+                placeholder="javascript, angular, nestjs"
+                class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">URL Обложки (необязательно)</label>
+            <input 
+              [value]="newPostCoverImage()"
+              (input)="newPostCoverImage.set($any($event.target).value)"
+              placeholder="https://example.com/image.jpg"
+              class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Содержание (поддерживается Markdown)</label>
+            <textarea 
+              [value]="newPostContent()"
+              (input)="newPostContent.set($any($event.target).value)"
+              placeholder="Введите содержание статьи в формате Markdown..."
+              rows="10"
+              class="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm font-sans"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
+          <button 
+            (click)="showCreatePostModal.set(false)"
+            class="px-4 py-2 border border-slate-800 text-slate-400 hover:bg-slate-850 rounded-xl text-xs font-semibold"
+          >
+            Отмена
+          </button>
+          <button 
+            (click)="onCreatePost()"
+            [disabled]="isSubmitting() || !newPostTitle().trim() || !newPostContent().trim()"
+            class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all"
+          >
+            Опубликовать
           </button>
         </div>
       </div>

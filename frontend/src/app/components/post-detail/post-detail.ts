@@ -39,7 +39,9 @@ export class PostDetailComponent implements OnInit {
       next: (data) => {
         this.post.set(data);
         this.parsedHtmlContent = this.parseMarkdown(data.content);
-        this.checkBookmarkStatus(data.id);
+        if (this.authService.currentUser()) {
+          this.checkBookmarkStatus(data.id);
+        }
       },
       error: () => {
         alert('Ошибка при загрузке статьи');
@@ -83,6 +85,12 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
+  calcReadingTime(content: string | undefined): number {
+    if (!content) return 1;
+    const words = content.trim().split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200));
+  }
+
   parseMarkdown(content: string | undefined): string {
     if (!content) return '';
     let html = content
@@ -90,11 +98,17 @@ export class PostDetailComponent implements OnInit {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
     
-    // Code blocks
-    html = html.replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-950 p-4 rounded-xl border border-slate-850 overflow-x-auto text-xs font-mono my-4 text-indigo-300"><code>$1</code></pre>');
+    // Code blocks with Darcula styling
+    html = html.replace(/```(?:[a-zA-Z0-9]*\n)?([\s\S]*?)```/g, (match, code) => {
+      let highlighted = code
+        .replace(/\b(const|let|var|function|return|if|else|for|while|class|import|from|export|interface|type|async|await)\b/g, '<span style="color: #cc7832;">$1</span>')
+        .replace(/('[^']*'|"[^"]*"|`[^`]*`)/g, '<span style="color: #6a8759;">$1</span>')
+        .replace(/\b([a-zA-Z_]\w*)(?=\()/g, '<span style="color: #ffc66d;">$1</span>');
+      return `<pre class="p-4 rounded-xl overflow-x-auto text-xs font-mono my-4" style="background-color: #2b2b2b; color: #a9b7c6; border: 1px solid #323232;"><code>${highlighted}</code></pre>`;
+    });
     
     // Inline code
-    html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-900 px-1.5 py-0.5 rounded text-rose-400 font-mono text-xs">$1</code>');
+    html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded font-mono text-xs" style="background-color: #2b2b2b; color: #a9b7c6;">$1</code>');
     
     // Headers
     html = html.replace(/^### (.*$)/gim, '<h4 class="text-base font-bold text-white mt-6 mb-2">$1</h4>');

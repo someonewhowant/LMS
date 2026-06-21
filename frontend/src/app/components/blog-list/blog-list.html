@@ -67,34 +67,36 @@
       </div>
 
       <!-- Bookmarks Section -->
-      <div class="space-y-3 pt-6 border-t border-slate-900">
-        <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Мои закладки</p>
-        @if (bookmarks().length === 0) {
-          <p class="px-3 text-xs text-slate-500 italic">Нет сохраненных материалов</p>
-        } @else {
-          <div class="space-y-2">
-            @for (bm of bookmarks(); track bm.id) {
-              <div class="p-3 bg-slate-900/50 border border-slate-850 rounded-xl flex items-start justify-between space-x-2">
-                <div class="flex-1 min-w-0">
-                  <span class="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider mb-1"
-                        [class]="bm.targetType === 'post' ? 'bg-indigo-950 text-indigo-400 border border-indigo-900/50' : 'bg-emerald-950 text-emerald-400 border border-emerald-900/50'">
-                    {{ bm.targetType === 'post' ? 'Статья' : 'Курс' }}
-                  </span>
-                  @if (bm.targetType === 'post') {
-                    <a [routerLink]="['/blog/post', bm.slugOrId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
-                      {{ bm.title }}
-                    </a>
-                  } @else {
-                    <a [routerLink]="['/student/course', bm.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
-                      {{ bm.title }}
-                    </a>
-                  }
+      @if (authService.currentUser()) {
+        <div class="space-y-3 pt-6 border-t border-slate-900">
+          <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Мои закладки</p>
+          @if (bookmarks().length === 0) {
+            <p class="px-3 text-xs text-slate-500 italic">Нет сохраненных материалов</p>
+          } @else {
+            <div class="space-y-2">
+              @for (bm of bookmarks(); track bm.id) {
+                <div class="p-3 bg-slate-900/50 border border-slate-850 rounded-xl flex items-start justify-between space-x-2">
+                  <div class="flex-1 min-w-0">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider mb-1"
+                          [class]="bm.targetType === 'post' ? 'bg-indigo-950 text-indigo-400 border border-indigo-900/50' : 'bg-emerald-950 text-emerald-400 border border-emerald-900/50'">
+                      {{ bm.targetType === 'post' ? 'Статья' : 'Курс' }}
+                    </span>
+                    @if (bm.targetType === 'post') {
+                      <a [routerLink]="['/blog/post', bm.slugOrId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
+                        {{ bm.title }}
+                      </a>
+                    } @else {
+                      <a [routerLink]="['/student/course', bm.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
+                        {{ bm.title }}
+                      </a>
+                    }
+                  </div>
                 </div>
-              </div>
-            }
-          </div>
-        }
-      </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </aside>
 
     <!-- Main Content Feed -->
@@ -115,17 +117,19 @@
           />
         </div>
 
-        @if (authService.currentUser()?.role !== 'student') {
-          <button 
-            (click)="showCreateModal.set(true)"
-            class="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-2"
+        <div class="flex items-center space-x-3">
+          <label class="text-xs text-slate-400 font-medium">Сортировка:</label>
+          <select 
+            [ngModel]="sortOrder()" 
+            (ngModelChange)="changeSort($event)"
+            class="bg-slate-900 border border-slate-800 text-xs text-slate-200 px-3 py-2 rounded-xl focus:outline-none focus:border-indigo-500 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Написать статью</span>
-          </button>
-        }
+            <option value="newest">Сначала новые</option>
+            <option value="oldest">Сначала старые</option>
+            <option value="discussed">Самые обсуждаемые</option>
+            <option value="popular">Популярные (по закладкам)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Filter Header info -->
@@ -154,6 +158,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           @for (post of posts(); track post.id) {
             <div class="bg-slate-900/40 hover:bg-slate-900/60 border border-slate-900/80 hover:border-slate-800/80 rounded-2xl p-6 transition-all duration-350 flex flex-col justify-between space-y-4 group">
+              @if (post.coverImageUrl) {
+                <div class="w-full h-48 rounded-xl bg-slate-800 overflow-hidden -mt-2 mb-2">
+                  <img [src]="post.coverImageUrl" [alt]="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+              }
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
@@ -167,15 +176,17 @@
                     </span>
                   </div>
 
-                  <button 
-                    (click)="toggleBookmark(post); $event.stopPropagation()"
-                    [class]="isBookmarked(post.id) ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-slate-300'"
-                    class="transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" [attr.fill]="isBookmarked(post.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                  </button>
+                  @if (authService.currentUser()) {
+                    <button 
+                      (click)="toggleBookmark(post); $event.stopPropagation()"
+                      [class]="isBookmarked(post.id) ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-slate-300'"
+                      class="transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" [attr.fill]="isBookmarked(post.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                    </button>
+                  }
                 </div>
 
                 <h3 class="text-lg font-bold text-white group-hover:text-indigo-450 transition-colors tracking-tight">
@@ -196,6 +207,13 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
+                  <span class="flex items-center space-x-1.5" title="Время чтения">
+                    <svg class="h-4 w-4 text-slate-550" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ calcReadingTime(post.content) }} мин</span>
+                  </span>
+                  
                   <span class="flex items-center space-x-1.5">
                     <svg class="h-4 w-4 text-slate-550" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -219,79 +237,4 @@
   </div>
 </div>
 
-<!-- Modal Dialog for Creating Post -->
-@if (showCreateModal()) {
-  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl">
-      <div class="px-6 py-4 border-b border-slate-850 flex items-center justify-between">
-        <h3 class="text-base font-bold text-white uppercase tracking-wider">Новая публикация</h3>
-        <button (click)="showCreateModal.set(false)" class="text-slate-400 hover:text-white transition-colors">
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
 
-      <div class="p-6 space-y-4">
-        <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Заголовок статьи</label>
-          <input 
-            [(ngModel)]="newPostTitle"
-            placeholder="Введите название..."
-            class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Категория</label>
-            <select 
-              [(ngModel)]="newPostCategoryId"
-              class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
-            >
-              <option [value]="undefined">Без категории</option>
-              @for (cat of categories(); track cat.id) {
-                <option [value]="cat.id">{{ cat.name }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Теги (через запятую)</label>
-            <input 
-              [(ngModel)]="newPostTagNames"
-              placeholder="javascript, angular, nestjs"
-              class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm"
-            />
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Содержание (поддерживается Markdown)</label>
-          <textarea 
-            [(ngModel)]="newPostContent"
-            placeholder="Введите содержание статьи в формате Markdown..."
-            rows="10"
-            class="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm font-sans"
-          ></textarea>
-        </div>
-      </div>
-
-      <div class="px-6 py-4 bg-slate-950/40 border-t border-slate-850 flex items-center justify-end space-x-3">
-        <button 
-          (click)="showCreateModal.set(false)"
-          class="px-4 py-2 border border-slate-800 text-slate-350 hover:bg-slate-900 rounded-xl text-xs font-semibold"
-        >
-          Отмена
-        </button>
-        <button 
-          (click)="savePost()"
-          [disabled]="isSavingPost"
-          class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50"
-        >
-          Опубликовать
-        </button>
-      </div>
-    </div>
-  </div>
-}

@@ -63,13 +63,11 @@ export const routes: Routes = [
   },
   {
     path: 'blog',
-    loadComponent: () => import('./components/blog-list/blog-list').then((m) => m.BlogListComponent),
-    canActivate: [roleGuard(['student', 'teacher', 'admin'])]
+    loadComponent: () => import('./components/blog-list/blog-list').then((m) => m.BlogListComponent)
   },
   {
     path: 'blog/post/:idOrSlug',
-    loadComponent: () => import('./components/post-detail/post-detail').then((m) => m.PostDetailComponent),
-    canActivate: [roleGuard(['student', 'teacher', 'admin'])]
+    loadComponent: () => import('./components/post-detail/post-detail').then((m) => m.PostDetailComponent)
   },
   {
     path: '**',

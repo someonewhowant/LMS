@@ -19,6 +19,9 @@ export class PostEntity {
   @Column({ type: 'text' })
   content: string;
 
+  @Column({ nullable: true })
+  coverImageUrl: string;
+
   @ManyToOne(() => CategoryEntity, (category) => category.posts, { onDelete: 'SET NULL', nullable: true })
   category: CategoryEntity;
 

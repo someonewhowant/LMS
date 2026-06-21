@@ -29,6 +29,7 @@ export interface Post {
   title: string;
   slug: string;
   content: string;
+  coverImageUrl?: string;
   createdAt: string;
   updatedAt: string;
   category?: Category;
@@ -52,26 +53,28 @@ export class BlogService {
     return { Authorization: `Bearer ${token}` };
   }
 
-  getPosts(categoryId?: number, tagId?: number): Observable<Post[]> {
+  getPosts(
+    page: number = 1,
+    limit: number = 10,
+    sort: string = 'newest',
+    categoryId?: number,
+    tagId?: number,
+    search?: string
+  ): Observable<{ data: Post[], total: number }> {
     let url = `${this.baseUrl}/posts`;
-    const params: string[] = [];
+    const params: string[] = [`page=${page}`, `limit=${limit}`, `sort=${sort}`];
     if (categoryId) params.push(`categoryId=${categoryId}`);
     if (tagId) params.push(`tagId=${tagId}`);
-    if (params.length > 0) {
-      url += `?${params.join('&')}`;
-    }
-    return this.http.get<Post[]>(url, { headers: this.getHeaders() });
+    if (search) params.push(`q=${encodeURIComponent(search)}`);
+    url += `?${params.join('&')}`;
+    return this.http.get<{ data: Post[], total: number }>(url, { headers: this.getHeaders() });
   }
 
   getPostByIdOrSlug(idOrSlug: string): Observable<Post> {
     return this.http.get<Post>(`${this.baseUrl}/posts/${idOrSlug}`, { headers: this.getHeaders() });
   }
 
-  searchPosts(query: string): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.baseUrl}/posts/search?q=${encodeURIComponent(query)}`, { headers: this.getHeaders() });
-  }
-
-  createPost(data: { title: string; content: string; categoryId?: number; tagNames?: string[] }): Observable<Post> {
+  createPost(data: { title: string; content: string; coverImageUrl?: string; categoryId?: number; tagNames?: string[] }): Observable<Post> {
     return this.http.post<Post>(`${this.baseUrl}/posts`, data, { headers: this.getHeaders() });
   }
 

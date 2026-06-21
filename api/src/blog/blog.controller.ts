@@ -6,8 +6,6 @@ import { Roles } from '../auth/roles.decorator';
 import { BlogService } from './blog.service';
 
 @ApiTags('blog')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
@@ -15,16 +13,16 @@ export class BlogController {
   @ApiOperation({ summary: 'Получить список всех постов' })
   @Get('posts')
   async getPosts(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('sort') sort?: 'newest' | 'oldest' | 'discussed' | 'popular',
     @Query('categoryId') categoryId?: number,
-    @Query('tagId') tagId?: number
+    @Query('tagId') tagId?: number,
+    @Query('q') search?: string
   ) {
-    return this.blogService.getPosts(categoryId, tagId);
-  }
-
-  @ApiOperation({ summary: 'Поиск постов блога' })
-  @Get('posts/search')
-  async searchPosts(@Query('q') query: string) {
-    return this.blogService.searchPosts(query || '');
+    const p = page ? parseInt(page, 10) : 1;
+    const l = limit ? parseInt(limit, 10) : 10;
+    return this.blogService.getPosts(p, l, sort, categoryId, tagId, search);
   }
 
   @ApiOperation({ summary: 'Получить пост по ID или Slug' })
@@ -34,17 +32,20 @@ export class BlogController {
   }
 
   @ApiOperation({ summary: 'Создать новый пост' })
-  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher', 'admin')
   @Post('posts')
   async createPost(
     @Request() req,
-    @Body() data: { title: string; content: string; categoryId?: number; tagNames?: string[] }
+    @Body() data: { title: string; content: string; coverImageUrl?: string; categoryId?: number; tagNames?: string[] }
   ) {
     return this.blogService.createPost(req.user, data);
   }
 
   @ApiOperation({ summary: 'Добавить комментарий к посту' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post('posts/:id/comments')
   async createComment(
     @Param('id', ParseIntPipe) postId: number,
@@ -61,7 +62,8 @@ export class BlogController {
   }
 
   @ApiOperation({ summary: 'Создать категорию' })
-  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher', 'admin')
   @Post('categories')
   async createCategory(@Body() data: { name: string }) {

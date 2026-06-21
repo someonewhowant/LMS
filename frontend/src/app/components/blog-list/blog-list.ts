@@ -22,17 +22,14 @@ export class BlogListComponent implements OnInit {
   readonly tags = signal<Tag[]>([]);
   readonly bookmarks = signal<Bookmark[]>([]);
 
+  readonly totalPosts = signal<number>(0);
+  readonly currentPage = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly sortOrder = signal<string>('newest');
+
   readonly selectedCategoryId = signal<number | undefined>(undefined);
   readonly selectedTagId = signal<number | undefined>(undefined);
   readonly searchQuery = signal<string>('');
-
-  // Post creation fields
-  readonly showCreateModal = signal<boolean>(false);
-  newPostTitle = '';
-  newPostContent = '';
-  newPostCategoryId: number | undefined = undefined;
-  newPostTagNames = '';
-  isSavingPost = false;
 
   // Category creation fields
   newCategoryName = '';
@@ -40,6 +37,16 @@ export class BlogListComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalPosts() / this.limit());
+  }
+
+  calcReadingTime(content: string): number {
+    if (!content) return 1;
+    const words = content.trim().split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200));
   }
 
   loadData() {
@@ -50,22 +57,31 @@ export class BlogListComponent implements OnInit {
   }
 
   loadPosts() {
-    const q = this.searchQuery().trim();
-    if (q) {
-      this.blogService.searchPosts(q).subscribe(posts => this.posts.set(posts));
-    } else {
-      this.blogService.getPosts(this.selectedCategoryId(), this.selectedTagId()).subscribe(posts => this.posts.set(posts));
-    }
+    const q = this.searchQuery().trim() || undefined;
+    this.blogService.getPosts(
+      this.currentPage(),
+      this.limit(),
+      this.sortOrder(),
+      this.selectedCategoryId(),
+      this.selectedTagId(),
+      q
+    ).subscribe(res => {
+      this.posts.set(res.data);
+      this.totalPosts.set(res.total);
+    });
   }
 
   loadBookmarks() {
-    this.bookmarkService.getBookmarks().subscribe(bms => this.bookmarks.set(bms));
+    if (this.authService.currentUser()) {
+      this.bookmarkService.getBookmarks().subscribe(bms => this.bookmarks.set(bms));
+    }
   }
 
   selectCategory(id: number | undefined) {
     this.selectedCategoryId.set(id);
     this.selectedTagId.set(undefined);
     this.searchQuery.set('');
+    this.currentPage.set(1);
     this.loadPosts();
   }
 
@@ -73,6 +89,7 @@ export class BlogListComponent implements OnInit {
     this.selectedTagId.set(id);
     this.selectedCategoryId.set(undefined);
     this.searchQuery.set('');
+    this.currentPage.set(1);
     this.loadPosts();
   }
 
@@ -80,7 +97,28 @@ export class BlogListComponent implements OnInit {
     this.searchQuery.set(query);
     this.selectedCategoryId.set(undefined);
     this.selectedTagId.set(undefined);
+    this.currentPage.set(1);
     this.loadPosts();
+  }
+
+  changeSort(sort: string) {
+    this.sortOrder.set(sort);
+    this.currentPage.set(1);
+    this.loadPosts();
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages) {
+      this.currentPage.update(p => p + 1);
+      this.loadPosts();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+      this.loadPosts();
+    }
   }
 
   toggleBookmark(post: Post) {
@@ -93,36 +131,7 @@ export class BlogListComponent implements OnInit {
     return this.bookmarks().some(b => b.targetType === 'post' && b.targetId === postId);
   }
 
-  savePost() {
-    if (!this.newPostTitle.trim() || !this.newPostContent.trim()) {
-      alert('Заполните заголовок и содержание!');
-      return;
-    }
 
-    this.isSavingPost = true;
-    const tagNames = this.newPostTagNames
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
-
-    this.blogService.createPost({
-      title: this.newPostTitle,
-      content: this.newPostContent,
-      categoryId: this.newPostCategoryId ? Number(this.newPostCategoryId) : undefined,
-      tagNames
-    }).subscribe({
-      next: (post) => {
-        this.isSavingPost = false;
-        this.showCreateModal.set(false);
-        this.resetPostForm();
-        this.loadPosts();
-      },
-      error: (err) => {
-        this.isSavingPost = false;
-        alert('Ошибка при создании публикации. Попробуйте еще раз.');
-      }
-    });
-  }
 
   saveCategory() {
     const name = this.newCategoryName.trim();
@@ -142,12 +151,7 @@ export class BlogListComponent implements OnInit {
     });
   }
 
-  resetPostForm() {
-    this.newPostTitle = '';
-    this.newPostContent = '';
-    this.newPostCategoryId = undefined;
-    this.newPostTagNames = '';
-  }
+
 
   logout() {
     this.authService.logout();
