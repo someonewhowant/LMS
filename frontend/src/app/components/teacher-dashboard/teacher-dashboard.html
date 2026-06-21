@@ -416,13 +416,9 @@
 
           <div class="space-y-1">
             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Содержание (поддерживается Markdown)</label>
-            <textarea 
-              [value]="newPostContent()"
-              (input)="newPostContent.set($any($event.target).value)"
-              placeholder="Введите содержание статьи в формате Markdown..."
-              rows="10"
-              class="w-full p-4 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 focus:outline-none text-slate-200 text-sm font-sans"
-            ></textarea>
+            <div class="h-[500px]">
+              <app-markdown-editor [ngModel]="newPostContent()" (ngModelChange)="newPostContent.set($event)"></app-markdown-editor>
+            </div>
           </div>
         </div>
 

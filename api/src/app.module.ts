@@ -1,7 +1,9 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -18,6 +20,10 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
       database: 'lms.sqlite',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, // Note: Setting synchronize: true shouldn't be used in production
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({

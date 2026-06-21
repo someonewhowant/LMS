@@ -38,7 +38,7 @@ export class BlogService {
     private readonly commentRepository: Repository<CommentEntity>,
     @InjectRepository(BookmarkEntity)
     private readonly bookmarkRepository: Repository<BookmarkEntity>
-  ) {}
+  ) { }
 
   // Categories
   async createCategory(name: string): Promise<CategoryEntity> {
@@ -191,6 +191,63 @@ export class BlogService {
   }
 
 
+  async updatePost(
+    postId: number,
+    user: UserEntity,
+    data: { title?: string; content?: string; coverImageUrl?: string; categoryId?: number; tagNames?: string[] }
+  ): Promise<PostEntity> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: { author: true, tags: true, category: true }
+    });
+    if (!post) throw new NotFoundException('Статья не найдена');
+
+    if (post.author?.id !== user.id && user.role !== 'admin') {
+      throw new NotFoundException('Нет прав для редактирования');
+    }
+
+    if (data.title !== undefined) {
+      post.title = data.title;
+      post.slug = slugify(data.title);
+    }
+    if (data.content !== undefined) post.content = data.content;
+    if (data.coverImageUrl !== undefined) post.coverImageUrl = data.coverImageUrl;
+
+    if (data.categoryId !== undefined) {
+      if (data.categoryId) {
+        const cat = await this.categoryRepository.findOne({ where: { id: data.categoryId } });
+        post.category = (cat || undefined) as any;
+      } else {
+        post.category = undefined as any;
+      }
+    }
+
+    if (data.tagNames) {
+      const tags: TagEntity[] = [];
+      for (const tagName of data.tagNames) {
+        const clean = tagName.trim();
+        if (!clean) continue;
+        let tag = await this.tagRepository.findOne({ where: { name: clean } });
+        if (!tag) tag = await this.createTag(clean);
+        tags.push(tag);
+      }
+      post.tags = tags;
+    }
+
+    return this.postRepository.save(post);
+  }
+
+  async deletePost(postId: number, user: UserEntity): Promise<void> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: { author: true }
+    });
+    if (!post) throw new NotFoundException('Статья не найдена');
+    if (post.author?.id !== user.id && user.role !== 'admin') {
+      throw new NotFoundException('Нет прав для удаления');
+    }
+    await this.postRepository.remove(post);
+  }
 
   // Comments
   async createComment(postId: number, user: UserEntity, content: string): Promise<CommentEntity> {
@@ -206,6 +263,31 @@ export class BlogService {
     });
 
     return this.commentRepository.save(comment);
+  }
+
+  async updateComment(commentId: number, user: UserEntity, content: string): Promise<CommentEntity> {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: { user: true }
+    });
+    if (!comment) throw new NotFoundException('Комментарий не найден');
+    if (comment.user?.id !== user.id && user.role !== 'admin') {
+      throw new NotFoundException('Нет прав для редактирования');
+    }
+    comment.content = content;
+    return this.commentRepository.save(comment);
+  }
+
+  async deleteComment(commentId: number, user: UserEntity): Promise<void> {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: { user: true }
+    });
+    if (!comment) throw new NotFoundException('Комментарий не найден');
+    if (comment.user?.id !== user.id && user.role !== 'admin') {
+      throw new NotFoundException('Нет прав для удаления');
+    }
+    await this.commentRepository.remove(comment);
   }
 
   // Bookmarks

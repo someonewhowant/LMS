@@ -4,9 +4,12 @@ import { AuthService } from '../../services/auth.service';
 import { CourseService, Course, CourseModule } from '../../services/course.service';
 import { BookmarkService } from '../../services/bookmark.service';
 import { BlogService, Category } from '../../services/blog.service';
+import { FormsModule } from '@angular/forms';
+import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor';
+
 @Component({
   selector: 'app-teacher-dashboard',
-  imports: [RouterLink],
+  imports: [RouterLink, MarkdownEditorComponent, FormsModule],
   templateUrl: './teacher-dashboard.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

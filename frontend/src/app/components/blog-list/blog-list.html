@@ -1,240 +1,263 @@
-<div class="flex-1 flex flex-col w-full">
-  <div class="flex-1 flex flex-col md:flex-row">
-    <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-80 border-r border-slate-800/80 bg-slate-900/30 p-6 space-y-8 overflow-y-auto">
-      <!-- General navigation -->
-      <div class="space-y-1">
-        <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Навигация</p>
-        <nav class="space-y-1">
-          <button 
-            (click)="selectCategory(undefined)"
-            [class]="!selectedCategoryId() && !selectedTagId() ? 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-slate-800/80 text-white font-medium shadow-sm transition-all text-left' : 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 transition-all text-left'"
-          >
-            <svg class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-            <span>Все статьи</span>
-          </button>
-        </nav>
-      </div>
+<!-- Blog Page — Full Redesign -->
+<div class="w-full">
 
-      <!-- Categories selection -->
-      <div class="space-y-3">
-        <div class="flex justify-between items-center px-3">
-          <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Категории</p>
-          @if (authService.currentUser()?.role !== 'student') {
-            <div class="flex items-center space-x-1">
-              <input 
-                [(ngModel)]="newCategoryName" 
-                placeholder="Новая..." 
-                class="bg-slate-950 border border-slate-800 text-xs px-2 py-0.5 rounded focus:outline-none focus:border-indigo-500 w-24 text-slate-200"
-              />
-              <button 
-                (click)="saveCategory()" 
-                [disabled]="isSavingCategory"
-                class="text-indigo-400 hover:text-indigo-300 text-xs font-bold px-1"
-              >
-                +
-              </button>
-            </div>
-          }
+  <!-- Hero Section -->
+  <section class="blog-hero-gradient border-b border-slate-800/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div>
+          <p class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">База знаний</p>
+          <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Блог и публикации</h1>
+          <p class="text-sm text-slate-400 mt-2 max-w-lg leading-relaxed">Статьи, гайды и разборы от преподавателей и участников сообщества EduFlow Academy.</p>
         </div>
-        <nav class="space-y-1">
-          @for (cat of categories(); track cat.id) {
-            <button 
-              (click)="selectCategory(cat.id)"
-              [class]="selectedCategoryId() === cat.id ? 'w-full flex items-center justify-between px-3 py-2 rounded-xl bg-indigo-950/40 text-indigo-300 border border-indigo-900/60 font-semibold text-xs text-left' : 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 transition-all text-xs text-left'"
-            >
-              <span>{{ cat.name }}</span>
-            </button>
-          }
-        </nav>
-      </div>
-
-      <!-- Popular Tags -->
-      <div class="space-y-3">
-        <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Теги</p>
-        <div class="flex flex-wrap gap-1.5 px-3">
-          @for (tag of tags(); track tag.id) {
-            <button 
-              (click)="selectTag(tag.id)"
-              [class]="selectedTagId() === tag.id ? 'px-2 py-1 rounded-md text-[10px] bg-indigo-500 text-white font-semibold' : 'px-2 py-1 rounded-md text-[10px] bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-colors'"
-            >
-              #{{ tag.name }}
-            </button>
-          }
-        </div>
-      </div>
-
-      <!-- Bookmarks Section -->
-      @if (authService.currentUser()) {
-        <div class="space-y-3 pt-6 border-t border-slate-900">
-          <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Мои закладки</p>
-          @if (bookmarks().length === 0) {
-            <p class="px-3 text-xs text-slate-500 italic">Нет сохраненных материалов</p>
-          } @else {
-            <div class="space-y-2">
-              @for (bm of bookmarks(); track bm.id) {
-                <div class="p-3 bg-slate-900/50 border border-slate-850 rounded-xl flex items-start justify-between space-x-2">
-                  <div class="flex-1 min-w-0">
-                    <span class="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider mb-1"
-                          [class]="bm.targetType === 'post' ? 'bg-indigo-950 text-indigo-400 border border-indigo-900/50' : 'bg-emerald-950 text-emerald-400 border border-emerald-900/50'">
-                      {{ bm.targetType === 'post' ? 'Статья' : 'Курс' }}
-                    </span>
-                    @if (bm.targetType === 'post') {
-                      <a [routerLink]="['/blog/post', bm.slugOrId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
-                        {{ bm.title }}
-                      </a>
-                    } @else {
-                      <a [routerLink]="['/student/course', bm.targetId]" class="block text-xs font-semibold text-slate-200 hover:text-indigo-400 transition-colors truncate">
-                        {{ bm.title }}
-                      </a>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      }
-    </aside>
-
-    <!-- Main Content Feed -->
-    <main class="flex-1 p-8 overflow-y-auto space-y-8 bg-slate-950">
-      <!-- Search & Action Bar -->
-      <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div class="relative w-full sm:max-w-md">
-          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+        <!-- Search -->
+        <div class="relative w-full md:w-96 blog-search-glow rounded-2xl">
+          <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </span>
-          <input 
-            [ngModel]="searchQuery()" 
+          <input
+            [ngModel]="searchQuery()"
             (ngModelChange)="onSearch($event)"
-            placeholder="Полнотекстовый поиск статей..."
-            class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl text-sm text-slate-200 placeholder-slate-500 transition-colors"
+            placeholder="Поиск по статьям…"
+            class="w-full pl-11 pr-4 py-3 bg-slate-900/80 border border-slate-800 focus:border-indigo-500/60 focus:outline-none rounded-2xl text-sm text-slate-200 placeholder-slate-500 transition-all"
           />
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="flex items-center space-x-3">
-          <label class="text-xs text-slate-400 font-medium">Сортировка:</label>
-          <select 
-            [ngModel]="sortOrder()" 
-            (ngModelChange)="changeSort($event)"
-            class="bg-slate-900 border border-slate-800 text-xs text-slate-200 px-3 py-2 rounded-xl focus:outline-none focus:border-indigo-500 transition-colors"
-          >
-            <option value="newest">Сначала новые</option>
-            <option value="oldest">Сначала старые</option>
-            <option value="discussed">Самые обсуждаемые</option>
-            <option value="popular">Популярные (по закладкам)</option>
+  <!-- Toolbar: Categories + Tags + Sort -->
+  <section class="border-b border-slate-800/40 bg-slate-950/60 sticky top-16 z-30 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-4 py-3">
+
+        <!-- Left: Categories + Tags (scrollable) -->
+        <div class="flex-1 overflow-x-auto blog-filters-scroll">
+          <div class="flex items-center gap-2 min-w-max">
+            <button (click)="selectCategory(undefined)" [class]="!selectedCategoryId() && !selectedTagId() ? 'filter-chip px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:border-slate-700'">
+              Все
+            </button>
+            @for (cat of categories(); track cat.id) {
+              <button (click)="selectCategory(cat.id)" [class]="selectedCategoryId() === cat.id ? 'filter-chip px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:border-slate-700'">
+                {{ cat.name }}
+              </button>
+            }
+            <span class="w-px h-5 bg-slate-800 mx-1"></span>
+            @for (tag of tags(); track tag.id) {
+              <button (click)="selectTag(tag.id)" [class]="selectedTagId() === tag.id ? 'blog-tag-pill px-2.5 py-1 rounded-lg text-[10px] font-bold bg-violet-600 text-white' : 'blog-tag-pill px-2.5 py-1 rounded-lg text-[10px] font-medium bg-slate-900/60 text-slate-500 border border-slate-800/60 hover:text-violet-400 hover:border-violet-800'">
+                #{{ tag.name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Right: Sort -->
+        <div class="flex items-center gap-2 shrink-0">
+          @if (authService.currentUser()?.role !== 'student') {
+            <div class="hidden md:flex items-center gap-1.5 mr-2">
+              <input [(ngModel)]="newCategoryName" placeholder="+ Категория" class="bg-slate-900 border border-slate-800 text-[11px] px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-indigo-500 w-28 text-slate-300 placeholder-slate-600"/>
+              <button (click)="saveCategory()" [disabled]="isSavingCategory" class="px-2 py-1.5 bg-indigo-600/80 hover:bg-indigo-500 text-white text-[10px] font-bold rounded-lg transition-colors disabled:opacity-50">OK</button>
+            </div>
+          }
+          <select [ngModel]="sortOrder()" (ngModelChange)="changeSort($event)" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 pl-3 pr-8 py-2 rounded-xl focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer appearance-none" style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22><path stroke=%22%236b7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22M6 8l4 4 4-4%22/></svg>');background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.2em 1.2em;">
+            <option value="newest">Новые</option>
+            <option value="oldest">Старые</option>
+            <option value="discussed">Обсуждаемые</option>
+            <option value="popular">Популярные</option>
           </select>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Filter Header info -->
-      @if (selectedCategoryId() || selectedTagId() || searchQuery()) {
-        <div class="flex items-center space-x-2 text-xs text-slate-400 bg-slate-900/40 border border-slate-900 p-3 rounded-xl">
-          <span>Фильтр активен:</span>
-          @if (selectedCategoryId()) {
-            <span class="bg-indigo-950 text-indigo-400 border border-indigo-900 px-2 py-0.5 rounded font-semibold">Категория</span>
-          }
-          @if (selectedTagId()) {
-            <span class="bg-indigo-950 text-indigo-400 border border-indigo-900 px-2 py-0.5 rounded font-semibold">Тег</span>
-          }
-          @if (searchQuery()) {
-            <span class="bg-indigo-950 text-indigo-400 border border-indigo-900 px-2 py-0.5 rounded font-semibold">Поиск: "{{ searchQuery() }}"</span>
-          }
-          <button (click)="selectCategory(undefined)" class="text-rose-400 hover:underline font-semibold ml-2">Сбросить</button>
-        </div>
-      }
+  <!-- Active Filter Banner -->
+  @if (hasActiveFilter()) {
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div class="flex items-center gap-3 px-4 py-2.5 bg-indigo-950/30 border border-indigo-900/40 rounded-xl text-xs">
+        <svg class="h-4 w-4 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        <span class="text-slate-400">Фильтр:</span>
+        @if (selectedCategoryName()) {
+          <span class="px-2 py-0.5 bg-indigo-900/50 text-indigo-300 rounded-md font-semibold">{{ selectedCategoryName() }}</span>
+        }
+        @if (selectedTagName()) {
+          <span class="px-2 py-0.5 bg-violet-900/50 text-violet-300 rounded-md font-semibold">#{{ selectedTagName() }}</span>
+        }
+        @if (searchQuery()) {
+          <span class="px-2 py-0.5 bg-slate-800 text-slate-300 rounded-md font-medium">«{{ searchQuery() }}»</span>
+        }
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-500">{{ totalPosts() }} результат(ов)</span>
+        <button (click)="clearFilters()" class="ml-auto text-indigo-400 hover:text-indigo-300 font-semibold hover:underline transition-colors">Сбросить</button>
+      </div>
+    </div>
+  }
 
-      <!-- Feed Grid -->
-      @if (posts().length === 0) {
-        <div class="p-12 text-center rounded-2xl bg-slate-900/30 border border-slate-900/80">
-          <p class="text-slate-400 text-sm">Публикации не найдены. Попробуйте изменить параметры поиска или фильтров.</p>
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    @if (posts().length === 0) {
+      <!-- Empty State -->
+      <div class="py-20 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 mb-5">
+          <svg class="h-7 w-7 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
         </div>
-      } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          @for (post of posts(); track post.id) {
-            <div class="bg-slate-900/40 hover:bg-slate-900/60 border border-slate-900/80 hover:border-slate-800/80 rounded-2xl p-6 transition-all duration-350 flex flex-col justify-between space-y-4 group">
-              @if (post.coverImageUrl) {
-                <div class="w-full h-48 rounded-xl bg-slate-800 overflow-hidden -mt-2 mb-2">
-                  <img [src]="post.coverImageUrl" [alt]="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <h3 class="text-lg font-bold text-slate-300">Публикации не найдены</h3>
+        <p class="text-sm text-slate-500 mt-2 max-w-sm mx-auto">Попробуйте изменить параметры поиска или выбрать другую категорию.</p>
+        @if (hasActiveFilter()) {
+          <button (click)="clearFilters()" class="mt-5 px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-colors">Сбросить фильтры</button>
+        }
+      </div>
+    } @else {
+
+      <!-- Featured Post (first page, no filters) -->
+      @if (featuredPost(); as fp) {
+        <a [routerLink]="['/blog/post', fp.slug]" class="block featured-card-hover blog-featured-enter group">
+          <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/60">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+              <!-- Image -->
+              <div class="relative h-64 lg:h-80 bg-slate-800 overflow-hidden">
+                @if (fp.coverImageUrl) {
+                  <img [src]="fp.coverImageUrl" [alt]="fp.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
+                } @else {
+                  <div class="w-full h-full bg-gradient-to-br from-indigo-950/80 to-violet-950/60 flex items-center justify-center">
+                    <svg class="h-16 w-16 text-indigo-900/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                  </div>
+                }
+                <div class="absolute top-4 left-4 px-3 py-1 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">Рекомендуем</div>
+              </div>
+              <!-- Content -->
+              <div class="p-8 lg:p-10 flex flex-col justify-center space-y-4">
+                <div class="flex items-center gap-3">
+                  @if (fp.category) {
+                    <span class="px-2.5 py-0.5 bg-indigo-950/60 text-indigo-400 text-[10px] font-bold rounded-md border border-indigo-900/40">{{ fp.category.name }}</span>
+                  }
+                  <span class="text-[11px] text-slate-500">{{ fp.createdAt | date:'dd MMM yyyy' }}</span>
+                  <span class="text-[11px] text-slate-600">·</span>
+                  <span class="text-[11px] text-slate-500">{{ calcReadingTime(fp.content) }} мин чтения</span>
                 </div>
-              }
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    @if (post.category) {
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950/80 text-indigo-450 border border-indigo-900/60">
-                        {{ post.category.name }}
-                      </span>
-                    }
-                    <span class="text-[10px] text-slate-500">
-                      {{ post.createdAt | date:'dd.MM.yyyy' }}
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-white group-hover:text-indigo-400 transition-colors tracking-tight leading-tight">{{ fp.title }}</h2>
+                <p class="text-sm text-slate-400 leading-relaxed line-clamp-3">{{ getExcerpt(fp.content, 220) }}</p>
+                <div class="flex items-center justify-between pt-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white">{{ fp.author?.fullName?.charAt(0) || 'A' }}</div>
+                    <span class="text-xs font-medium text-slate-300">{{ fp.author?.fullName }}</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-xs text-slate-500">
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                      {{ fp.comments?.length || 0 }}
+                    </span>
+                    <span class="inline-flex items-center gap-1 text-indigo-400 font-semibold group-hover:text-indigo-300">
+                      Читать
+                      <svg class="h-3 w-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      }
 
+      <!-- Posts Grid -->
+      @if (gridPosts().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (post of gridPosts(); track post.id) {
+            <article class="blog-card-enter blog-card-hover group relative bg-slate-900/40 border border-slate-800/50 rounded-2xl overflow-hidden flex flex-col">
+              <!-- Cover Image -->
+              <a [routerLink]="['/blog/post', post.slug]" class="block relative h-44 bg-slate-800 overflow-hidden shrink-0">
+                @if (post.coverImageUrl) {
+                  <img [src]="post.coverImageUrl" [alt]="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                } @else {
+                  <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                    <svg class="h-10 w-10 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                  </div>
+                }
+                <!-- Reading time badge -->
+                <div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 bg-black/60 backdrop-blur-sm rounded-md text-[10px] text-white/80 font-medium">
+                  <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  {{ calcReadingTime(post.content) }} мин
+                </div>
+              </a>
+
+              <!-- Content -->
+              <div class="flex-1 flex flex-col p-5 space-y-3">
+                <!-- Meta -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    @if (post.category) {
+                      <span class="px-2 py-0.5 bg-indigo-950/60 text-indigo-400 text-[10px] font-bold rounded border border-indigo-900/40">{{ post.category.name }}</span>
+                    }
+                    <span class="text-[10px] text-slate-500">{{ post.createdAt | date:'dd.MM.yyyy' }}</span>
+                  </div>
                   @if (authService.currentUser()) {
-                    <button 
-                      (click)="toggleBookmark(post); $event.stopPropagation()"
-                      [class]="isBookmarked(post.id) ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-slate-300'"
-                      class="transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" [attr.fill]="isBookmarked(post.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                      </svg>
+                    <button (click)="toggleBookmark(post); $event.stopPropagation(); $event.preventDefault()" [class]="isBookmarked(post.id) ? 'text-amber-400' : 'text-slate-600 hover:text-slate-400'" class="transition-colors p-0.5">
+                      <svg class="h-4 w-4" [attr.fill]="isBookmarked(post.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                     </button>
                   }
                 </div>
 
-                <h3 class="text-lg font-bold text-white group-hover:text-indigo-450 transition-colors tracking-tight">
+                <!-- Title -->
+                <h3 class="text-base font-bold text-white group-hover:text-indigo-400 transition-colors tracking-tight leading-snug line-clamp-2">
                   <a [routerLink]="['/blog/post', post.slug]">{{ post.title }}</a>
                 </h3>
 
-                <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                  {{ post.content }}
-                </p>
-              </div>
+                <!-- Excerpt -->
+                <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 flex-1">{{ getExcerpt(post.content) }}</p>
 
-              <div class="pt-4 border-t border-slate-900 flex items-center justify-between text-xs text-slate-500">
-                <div class="flex items-center space-x-2">
-                  <div class="h-6 w-6 rounded-full bg-slate-800 flex items-center justify-center font-bold text-indigo-400 text-[10px]">
-                    {{ post.author?.fullName?.charAt(0) || 'A' }}
+                <!-- Tags -->
+                @if (post.tags && post.tags.length > 0) {
+                  <div class="flex flex-wrap gap-1 pt-1">
+                    @for (tag of post.tags.slice(0, 3); track tag.id) {
+                      <span class="text-[9px] font-medium text-slate-500 bg-slate-800/60 px-1.5 py-0.5 rounded">#{{ tag.name }}</span>
+                    }
                   </div>
-                  <span class="font-medium text-slate-400">{{ post.author?.fullName }}</span>
-                </div>
+                }
 
-                <div class="flex items-center space-x-4">
-                  <span class="flex items-center space-x-1.5" title="Время чтения">
-                    <svg class="h-4 w-4 text-slate-550" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{{ calcReadingTime(post.content) }} мин</span>
-                  </span>
-                  
-                  <span class="flex items-center space-x-1.5">
-                    <svg class="h-4 w-4 text-slate-550" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <span>{{ post.comments?.length || 0 }}</span>
-                  </span>
-                  
-                  <a [routerLink]="['/blog/post', post.slug]" class="text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center space-x-1">
-                    <span>Читать</span>
-                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
+                <!-- Footer -->
+                <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-[9px] font-bold text-white">{{ post.author?.fullName?.charAt(0) || 'A' }}</div>
+                    <span class="text-[11px] font-medium text-slate-400">{{ post.author?.fullName }}</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-[11px] text-slate-500">
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                      {{ post.comments?.length || 0 }}
+                    </span>
+                    <a [routerLink]="['/blog/post', post.slug]" class="text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center gap-0.5">
+                      Читать
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </article>
           }
         </div>
       }
-    </main>
+
+      <!-- Pagination -->
+      @if (totalPages > 1) {
+        <nav class="flex items-center justify-center gap-2 pt-4">
+          <button (click)="prevPage()" [disabled]="currentPage() === 1" class="pagination-btn px-3 py-2 bg-slate-900 border border-slate-800 text-slate-400 text-xs font-medium rounded-xl hover:text-white hover:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          @for (p of pageNumbers; track $index) {
+            @if (p === -1) {
+              <span class="px-1 text-slate-600 text-xs">…</span>
+            } @else {
+              <button (click)="goToPage(p)" [class]="p === currentPage() ? 'pagination-btn w-9 h-9 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'pagination-btn w-9 h-9 rounded-xl text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all'">
+                {{ p }}
+              </button>
+            }
+          }
+          <button (click)="nextPage()" [disabled]="currentPage() === totalPages" class="pagination-btn px-3 py-2 bg-slate-900 border border-slate-800 text-slate-400 text-xs font-medium rounded-xl hover:text-white hover:border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </nav>
+      }
+
+    }
   </div>
 </div>
-
-

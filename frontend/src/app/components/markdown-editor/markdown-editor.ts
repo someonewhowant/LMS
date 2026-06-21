@@ -1,125 +1,165 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, ViewChild, ElementRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BlogService, Post, Comment } from '../../services/blog.service';
-import { BookmarkService } from '../../services/bookmark.service';
-import { AuthService } from '../../services/auth.service';
+import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { BlogService } from '../../services/blog.service';
+
 @Component({
-  selector: 'app-post-detail',
+  selector: 'app-markdown-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './post-detail.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './markdown-editor.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MarkdownEditorComponent),
+      multi: true
+    }
+  ]
 })
-export class PostDetailComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+export class MarkdownEditorComponent implements ControlValueAccessor {
   private readonly blogService = inject(BlogService);
-  private readonly bookmarkService = inject(BookmarkService);
-  readonly authService = inject(AuthService);
 
-  readonly post = signal<Post | null>(null);
-  readonly isBookmarked = signal<boolean>(false);
-  readonly newCommentText = signal<string>('');
-  readonly isSavingComment = signal<boolean>(false);
+  @ViewChild('textareaRef') textareaRef!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('mdFileInput') mdFileInput!: ElementRef<HTMLInputElement>;
 
-  parsedHtmlContent = '';
+  value = signal<string>('');
+  viewMode = signal<'write' | 'preview' | 'split'>('split');
+  isUploading = signal<boolean>(false);
+  isDragging = signal<boolean>(false);
 
-  ngOnInit() {
-    const idOrSlug = this.route.snapshot.paramMap.get('idOrSlug');
-    if (idOrSlug) {
-      this.loadPost(idOrSlug);
-    } else {
-      this.router.navigate(['/blog']);
+  onChange: any = () => {};
+  onTouch: any = () => {};
+
+  writeValue(val: string): void {
+    if (val !== undefined) {
+      this.value.set(val || '');
     }
   }
 
-  loadPost(idOrSlug: string) {
-    this.blogService.getPostByIdOrSlug(idOrSlug).subscribe({
-      next: (data) => {
-        this.post.set(data);
-        this.parsedHtmlContent = this.parseMarkdown(data.content);
-        if (this.authService.currentUser()) {
-          this.checkBookmarkStatus(data.id);
-        }
-      },
-      error: () => {
-        alert('Ошибка при загрузке статьи');
-        this.router.navigate(['/blog']);
-      }
-    });
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
   }
 
-  checkBookmarkStatus(postId: number) {
-    this.bookmarkService.checkBookmark('post', postId).subscribe({
-      next: (res) => this.isBookmarked.set(res.bookmarked)
-    });
+  registerOnTouched(fn: any): void {
+    this.onTouch = fn;
   }
 
-  toggleBookmark() {
-    const currentPost = this.post();
-    if (!currentPost) return;
-
-    this.bookmarkService.toggleBookmark('post', currentPost.id).subscribe({
-      next: (res) => this.isBookmarked.set(res.bookmarked)
-    });
+  onInput(event: Event) {
+    const val = (event.target as HTMLTextAreaElement).value;
+    this.value.set(val);
+    this.onChange(val);
+    this.onTouch();
   }
 
-  addComment() {
-    const text = this.newCommentText().trim();
-    const currentPost = this.post();
-    if (!text || !currentPost) return;
-
-    this.isSavingComment.set(true);
-    this.blogService.createComment(currentPost.id, text).subscribe({
-      next: () => {
-        this.isSavingComment.set(false);
-        this.newCommentText.set('');
-        // Reload post to fetch updated comments
-        this.loadPost(String(currentPost.id));
-      },
-      error: () => {
-        this.isSavingComment.set(false);
-        alert('Ошибка добавления комментария');
-      }
-    });
+  setViewMode(mode: 'write' | 'preview' | 'split') {
+    this.viewMode.set(mode);
   }
 
-  deletePost() {
-    const currentPost = this.post();
-    if (!currentPost) return;
-    if (!confirm('Вы уверены, что хотите удалить эту статью?')) return;
+  insertText(before: string, after: string = '') {
+    const el = this.textareaRef.nativeElement;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = this.value();
+    const selectedText = text.substring(start, end);
+    const replacement = before + selectedText + after;
     
-    this.blogService.deletePost(currentPost.id).subscribe({
-      next: () => {
-        alert('Статья удалена');
-        this.router.navigate(['/blog']);
+    const newVal = text.substring(0, start) + replacement + text.substring(end);
+    this.value.set(newVal);
+    this.onChange(newVal);
+    this.onTouch();
+
+    // Reset selection
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start + before.length, start + before.length + selectedText.length);
+    }, 0);
+  }
+
+  // Formatting actions
+  formatBold() { this.insertText('**', '**'); }
+  formatItalic() { this.insertText('*', '*'); }
+  formatHeading() { this.insertText('### '); }
+  formatQuote() { this.insertText('> '); }
+  formatCode() { this.insertText('```\n', '\n```'); }
+  formatLink() { this.insertText('[', '](url)'); }
+  formatList() { this.insertText('- '); }
+
+  triggerImageUpload() {
+    this.fileInput.nativeElement.click();
+  }
+
+  triggerMdUpload() {
+    this.mdFileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.uploadImage(input.files[0]);
+      input.value = ''; // Reset
+    }
+  }
+
+  onMdFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string || '';
+        this.value.set(content);
+        this.onChange(content);
+        this.onTouch();
+      };
+      reader.readAsText(file);
+      input.value = ''; // Reset
+    }
+  }
+
+  uploadImage(file: File) {
+    this.isUploading.set(true);
+    this.blogService.uploadImage(file).subscribe({
+      next: (res) => {
+        this.insertText(`![${file.name}](${res.url})`);
+        this.isUploading.set(false);
       },
       error: (err) => {
-        console.error(err);
-        alert('Ошибка при удалении статьи');
+        console.error('Image upload failed', err);
+        alert('Ошибка загрузки изображения');
+        this.isUploading.set(false);
       }
     });
   }
 
-  deleteComment(commentId: number) {
-    if (!confirm('Удалить комментарий?')) return;
-    this.blogService.deleteComment(commentId).subscribe({
-      next: () => {
-        const currentPost = this.post();
-        if (currentPost) this.loadPost(String(currentPost.id));
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Ошибка при удалении комментария');
-      }
-    });
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging.set(true);
   }
 
-  calcReadingTime(content: string | undefined): number {
-    if (!content) return 1;
-    const words = content.trim().split(/\s+/).length;
-    return Math.max(1, Math.ceil(words / 200));
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging.set(false);
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging.set(false);
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        this.uploadImage(file);
+      } else if (file.name.endsWith('.md')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string || '';
+          this.value.set(content);
+          this.onChange(content);
+          this.onTouch();
+        };
+        reader.readAsText(file);
+      }
+    }
   }
 
   parseMarkdown(content: string | undefined): string {
@@ -213,10 +253,5 @@ export class PostDetailComponent implements OnInit {
     });
 
     return html;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }
